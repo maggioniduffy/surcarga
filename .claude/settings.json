@@ -5,7 +5,9 @@
       "Bash(npx prisma *)",
       "Bash(docker exec *)",
       "Bash(break)",
-      "Bash(docker rm *)"
+      "Bash(docker rm *)",
+      "WebFetch(domain:claude.ai)",
+      "Bash(node -e ' *)"
     ]
   }
 }

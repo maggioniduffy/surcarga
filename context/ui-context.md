@@ -40,13 +40,35 @@ Core visual categorization is listing status and route/availability density, obs
 | Media disponibilidad (route density) | — | Yellow line |
 | Baja disponibilidad (route density) | — | Orange line |
 
-Exact hex values should be pulled into CSS variables from the delivered design files rather than re-guessed (brand orange observed at `#FF5A1F` / hover `#FF7038`).
+Exact hex values are defined in `src/app/globals.css` and pulled from the delivered design files rather than re-guessed (brand orange `#FF5A1F` / hover `#FF7038`). Route density resolves to `--color-route-high` `#2ecc71`, `--color-route-medium` `#f0c419`, `--color-route-low` `#FF5A1F`.
+
+## Surface, Border, and Ink Scales
+
+Beyond the status colors, the theme defines three ordered scales in `globals.css`. Use these instead of ad hoc greys or `bg-zinc-*` utilities; shadcn's `--background`/`--foreground`/`--card`/`--border`/`--muted-foreground` alias into them.
+
+| Scale | Tokens (light → deep / faint → strong) |
+|---|---|
+| Surface | `--color-surface-base` `#0a0a0f` (page canvas), `-sunken` `#0d0d14`, `-panel` `#101017` (cards), `-raised` `#16161f`, `-control` `#1e1e28`; warm variants `-warm` `#12100f`, `-warm-raised` `#1b1108`, `-warm-featured` `#12111a` for empresa/brand-side panels |
+| Border | `--color-line-faint` `#14141c` (section rules), `-subtle` `#1c1c26`, `--color-line` `#23232e` (default card edge), `-raised` `#2a2a38`, `-control` `#2f2f3d`, `-control-hover` `#4a4a5c`; warm `-warm` `#33241c`, `-warm-raised` `#4a2a18` |
+| Ink | `--color-ink` `#e8e8ee` (primary), `-strong` `#d7d7e0`, `-muted` `#c9c9d6`, `-subtle` `#9a9aab` (body copy), `-faint` `#71718a`, `-dim` `#6b6b80`, `-ghost` `#5f5f76` (metadata) |
+
+`--color-topo-line` `#2b3c5c` is reserved for the decorative contour-line SVG backgrounds.
+
+## Landing Design Language
+
+Established by the landing page port (see `memory/decision-landing-design-source.md`) and the reference for any new public-facing surface:
+
+- **Section rhythm** — `py-[110px] px-8`, `border-t border-line-faint`, inner column capped at `1240px` (`920px` for text-heavy sections like the FAQ).
+- **Section headers** — an uppercase eyebrow at `11.5px` / `tracking-[0.2em]` in brand orange (or `--color-ink-faint` for secondary sections), followed by an Archivo heading at `clamp(2rem,5vw,52px)`, `font-extrabold`, `leading-[1.02]`, `tracking-[-0.035em]`.
+- **Display type** — Archivo carries heavy weights (800/900) with tight negative tracking; the hero runs `clamp(3rem,9vw,100px)` at `leading-[0.92]`. Body copy is IBM Plex Sans at `14.5–18.5px`, `leading-[1.6]`, in `--color-ink-subtle`.
+- **Decorative backgrounds** — layered contour-line SVGs (`components/landing/topo-lines.tsx`) in three variants (`hero`, `band`, `inverted`), plus a radial brand glow behind the hero headline. Always `pointer-events-none` and `aria-hidden`.
+- **Inverted blocks** — the final CTA flips to a solid `--color-brand` panel with near-black type, using hand-picked deep-orange shades for its eyebrow and body copy.
 
 ## Component Library
 shadcn/ui. Components live in `components/ui/` and are treated as generated/vendored — not hand-rolled from scratch. Domain-specific composition happens in `components/{domain}/`, building on top of the primitives rather than modifying them (see code-standards.md and ai-workflow-rules.md for the protected-component rule).
 
 ## Layout Patterns
-- Public marketing landing: hero, "how it works," role-split call-to-action (Empresa vs. Transportista).
+- Public marketing landing (built): header, hero with stat row, problema (3 cards), cómo funciona (two role columns with numbered steps), funcionalidades grid (6 cards), mapa de cobertura (schematic SVG + listing/corridor side panel), testimonios, precios (free-transportista banner + two empresa tiers), FAQ accordion, inverted CTA block, four-column footer.
 - Search/browse grid with filter sidebar (Buscar Camiones / cargas listing).
 - Detail page combining a map view with a side info panel (Detalle Viaje).
 - Two-column publishing form with a location picker tied to the map/catalog (Publicar Carga, Publicar Viaje).

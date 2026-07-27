@@ -8,25 +8,60 @@
 
   --color-brand: #ff5a1f;
   --color-brand-hover: #ff7038;
+  --color-brand-link-hover: #ff7a4a;
 
-  --color-status-published-bg: #10331f;
-  --color-status-published-text: #34d264;
+  /* Surface scale — near-black base with slightly lifted panels. */
+  --color-surface-base: #0a0a0f;
+  --color-surface-panel: #101017;
+  --color-surface-sunken: #0d0d14;
+  --color-surface-raised: #16161f;
+  --color-surface-control: #1e1e28;
+  /* Warm-tinted surfaces for empresa/brand-side panels. */
+  --color-surface-warm: #12100f;
+  --color-surface-warm-raised: #1b1108;
+  --color-surface-warm-featured: #12111a;
 
-  --color-status-confirmed-bg: #10331f;
-  --color-status-confirmed-text: #34d264;
+  /* Border scale — hairline to visible control edges. */
+  --color-line-faint: #14141c;
+  --color-line-subtle: #1c1c26;
+  --color-line: #23232e;
+  --color-line-raised: #2a2a38;
+  --color-line-control: #2f2f3d;
+  --color-line-control-hover: #4a4a5c;
+  --color-line-warm: #33241c;
+  --color-line-warm-raised: #4a2a18;
 
-  --color-status-pending-bg: #332b10;
-  --color-status-pending-text: #e0c23a;
+  /* Ink scale — primary text down to faint metadata. */
+  --color-ink: #e8e8ee;
+  --color-ink-strong: #d7d7e0;
+  --color-ink-muted: #c9c9d6;
+  --color-ink-subtle: #9a9aab;
+  --color-ink-faint: #71718a;
+  --color-ink-dim: #6b6b80;
+  --color-ink-ghost: #5f5f76;
 
-  --color-status-urgent-bg: #3a1710;
-  --color-status-urgent-text: #ff6a4a;
+  /* Topographic route lines in decorative section backgrounds. */
+  --color-topo-line: #2b3c5c;
 
-  --color-status-featured-bg: #3a2110;
+  --color-status-published-bg: #0e1712;
+  --color-status-published-text: #2ecc71;
+  --color-status-published-border: #1f3a29;
+
+  --color-status-confirmed-bg: #0e1712;
+  --color-status-confirmed-text: #2ecc71;
+
+  --color-status-pending-bg: #1e1a08;
+  --color-status-pending-text: #f0c419;
+
+  --color-status-urgent-bg: #1b1108;
+  --color-status-urgent-text: #ff5a1f;
+
+  --color-status-featured-bg: #16110e;
   --color-status-featured-text: #ff5a1f;
 
-  --color-route-high: #34d264;
-  --color-route-medium: #e0c23a;
-  --color-route-low: #ff7038;
+  --color-route-high: #2ecc71;
+  --color-route-medium: #f0c419;
+  --color-route-low: #ff5a1f;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -69,9 +104,39 @@
 
   --color-brand: var(--color-brand);
   --color-brand-hover: var(--color-brand-hover);
+  --color-brand-link-hover: var(--color-brand-link-hover);
+
+  --color-surface-base: var(--color-surface-base);
+  --color-surface-panel: var(--color-surface-panel);
+  --color-surface-sunken: var(--color-surface-sunken);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-control: var(--color-surface-control);
+  --color-surface-warm: var(--color-surface-warm);
+  --color-surface-warm-raised: var(--color-surface-warm-raised);
+  --color-surface-warm-featured: var(--color-surface-warm-featured);
+
+  --color-line-faint: var(--color-line-faint);
+  --color-line-subtle: var(--color-line-subtle);
+  --color-line: var(--color-line);
+  --color-line-raised: var(--color-line-raised);
+  --color-line-control: var(--color-line-control);
+  --color-line-control-hover: var(--color-line-control-hover);
+  --color-line-warm: var(--color-line-warm);
+  --color-line-warm-raised: var(--color-line-warm-raised);
+
+  --color-ink: var(--color-ink);
+  --color-ink-strong: var(--color-ink-strong);
+  --color-ink-muted: var(--color-ink-muted);
+  --color-ink-subtle: var(--color-ink-subtle);
+  --color-ink-faint: var(--color-ink-faint);
+  --color-ink-dim: var(--color-ink-dim);
+  --color-ink-ghost: var(--color-ink-ghost);
+
+  --color-topo-line: var(--color-topo-line);
 
   --color-status-published-bg: var(--color-status-published-bg);
   --color-status-published-text: var(--color-status-published-text);
+  --color-status-published-border: var(--color-status-published-border);
   --color-status-confirmed-bg: var(--color-status-confirmed-bg);
   --color-status-confirmed-text: var(--color-status-confirmed-text);
   --color-status-pending-bg: var(--color-status-pending-bg);
@@ -126,13 +191,13 @@
 
 .dark {
 
-  --background: oklch(0.145 0 0);
+  --background: var(--color-surface-base);
 
-  --foreground: oklch(0.985 0 0);
+  --foreground: var(--color-ink);
 
-  --card: oklch(0.205 0 0);
+  --card: var(--color-surface-panel);
 
-  --card-foreground: oklch(0.985 0 0);
+  --card-foreground: var(--color-ink);
 
   --popover: oklch(0.205 0 0);
 
@@ -148,17 +213,17 @@
 
   --muted: oklch(0.269 0 0);
 
-  --muted-foreground: oklch(0.708 0 0);
+  --muted-foreground: var(--color-ink-subtle);
 
-  --accent: oklch(0.269 0 0);
+  --accent: var(--color-surface-control);
 
-  --accent-foreground: oklch(0.985 0 0);
+  --accent-foreground: var(--color-ink);
 
   --destructive: oklch(0.704 0.191 22.216);
 
-  --border: oklch(1 0 0 / 10%);
+  --border: var(--color-line);
 
-  --input: oklch(1 0 0 / 15%);
+  --input: var(--color-line-control);
 
   --ring: oklch(0.556 0 0);
 
@@ -198,5 +263,26 @@
   }
   html {
     @apply font-sans;
+  }
+  ::selection {
+    background: var(--color-brand);
+    color: var(--color-surface-base);
+  }
+}
+
+/* Traces the active route on the coverage map. */
+@keyframes routeDash {
+  to {
+    stroke-dashoffset: -220;
+  }
+}
+
+.animate-route-dash {
+  animation: routeDash 3.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-route-dash {
+    animation: none;
   }
 }

@@ -21,17 +21,25 @@ Get a working Next.js + TypeScript + Tailwind + shadcn/ui project with the base 
 - Created `src/lib/db/client.ts` (Prisma Client singleton with `@prisma/adapter-pg`) and `prisma/seed.ts` (idempotent `upsert` seed for the ubicaciones catalog), wired via `prisma.config.ts` `migrations.seed`.
 - Verified end-to-end against a throwaway local Postgres+PostGIS Docker container (user-approved, then torn down): `prisma migrate dev` created and applied `prisma/migrations/20260727223516_init`, `prisma db seed` inserted all 9 base cities and Loma Campana correctly. `npm run lint`, `npx tsc --noEmit`, and `npm run build` all pass.
 
+- Built the public landing page as a port of a delivered Claude Design artifact — see [[decision-landing-design-source]]. Eleven sections in `src/components/landing/`: header, hero (contour-line background + glow + stat row), problema, cómo funciona (two role columns), funcionalidades grid, mapa de cobertura (schematic SVG + listing/corridor side panel), testimonios, precios, FAQ, CTA final, footer. All copy lives in `src/content/es.ts`; the FAQ accordion is the only `'use client'` component.
+- Extended the design tokens in `src/app/globals.css` to the artifact's full palette: surface scale (`--color-surface-base` `#0a0a0f` → `panel`/`sunken`/`raised`/`control` + warm variants), border scale (`--color-line-faint` → `-control-hover`, plus warm), ink scale (`--color-ink` `#e8e8ee` → `-ghost`), `--color-topo-line`, and a `routeDash` keyframe (respects `prefers-reduced-motion`). Status and route-density tokens were re-pointed at the artifact's exact values (green `#2ecc71`, yellow `#f0c419`, orange `#FF5A1F`). shadcn's `--background`/`--foreground`/`--card`/`--border`/`--muted-foreground` now alias these instead of holding their own greys.
+- Created the `memory/` directory that `AGENTS.md` and `progress-tracker.md` both referenced but which never existed. Note that three memory files linked from this tracker (`decision-stack-versions`, `decision-prisma7-driver-adapter`, `decision-schema-assumptions`) are still dangling — tracked in `memory/MEMORY.md`.
+- Verified: `npm run lint`, `npx tsc --noEmit`, and `npm run build` all pass. Confirmed every custom token compiles to a real utility class in the built CSS (a mistyped `@theme` name would fail silently), and confirmed all eleven sections plus the five FAQ buttons render in the SSR output. No headless-browser tooling is installed in this environment, so the page has not been visually screenshotted.
+
 ## In Progress
 
-Nothing actively in progress — phase 0 scaffolding is done pending the open questions below.
+Nothing actively in progress.
 
 ## Next Up
 
+- Resolve the landing copy's scope conflicts before the site is public — see Open Questions below and [[open-landing-copy-scope-conflicts]].
+- Wire the landing page's CTAs to real `(auth)` signup routes once the auth/role signup flow is built; they currently all point at in-page anchors.
 - Pick the next unit per `ai-workflow-rules.md` scoping rules (e.g. auth/role signup flow, or the ubicaciones "add inline while publishing" flow) — needs a user decision on priority.
 - Provision a real Postgres+PostGIS database (Supabase or otherwise, see Open Questions) and point `DATABASE_URL` at it; `.env` currently holds the original placeholder connection string.
 - Wire actual auth (Supabase Auth assumed, unconfirmed) before building any `app/(dashboard)/layout.tsx` Server Layout Guard.
 
 ## Open Questions
+- **The landing page advertises features and figures the context files don't back** — ported verbatim from the design artifact at the user's direction, flagged rather than softened. See [[open-landing-copy-scope-conflicts]] for the itemised list: real-time GPS tracking + ETA and an offline/satellite driver app (explicitly Out Of Scope in project-overview.md), "la IA matchea" (no AI component exists in the Matching & Postulación Model), USD 19 / USD 39 listing fees (fee amount and currency are still open, and ARS was the presumed currency), transportista verification claims (CUIT/RUTA/titularidad — nothing in the schema models this), and invented stats (38%, 1.240 viajes/mes) plus three named fictional testimonials. None of this is a requirements source; all of it must be confirmed or replaced before launch.
 - ORM: Prisma was assumed over Drizzle in architecture-context.md — confirm.
 - Database host: Supabase was assumed over Neon (bundles Auth + Storage) — confirm.
 - Auth provider: Supabase Auth was assumed over Auth.js, to pair with the Supabase Postgres pick — confirm.
