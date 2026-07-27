@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx shadcn@latest init -y -d)",
+      "Bash(npx prisma *)",
+      "Bash(docker exec *)",
+      "Bash(break)",
+      "Bash(docker rm *)"
+    ]
+  }
+}

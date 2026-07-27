@@ -1,0 +1,179 @@
+// Vaca Muerta Logística — base data model.
+// Structure only: see context/architecture-context.md for the models and
+// invariants this schema implements. No business logic lives here.
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  extensions = [postgis]
+}
+
+/// users.role — set once at signup (or granted for admin) and immutable
+/// afterward. admin only unlocks ubicaciones edit/delete.
+enum Role {
+  transportista
+  empresa
+  admin
+}
+
+/// Distinguishes the two seed categories described in the location catalog:
+/// base cities vs. known yacimientos/operational sites.
+enum LocationType {
+  ciudad
+  yacimiento
+}
+
+enum CargaStatus {
+  pendingPayment @map("pending_payment")
+  published
+  confirmed
+  completed
+
+  @@map("carga_status")
+}
+
+enum PostulacionStatus {
+  pending
+  confirmed
+  rejected
+
+  @@map("postulacion_status")
+}
+
+enum PaymentProvider {
+  mercadoPago @map("mercado_pago")
+  stripe
+
+  @@map("payment_provider")
+}
+
+enum PaymentStatus {
+  pending
+  approved
+  rejected
+
+  @@map("payment_status")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  role      Role
+  name      String
+  email     String   @unique
+  phone     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  viajes                Viaje[]
+  cargas                Carga[]
+  postulaciones         Postulacion[]
+  payments              Payment[]
+  ubicacionesAgregadas  Ubicacion[]   @relation("UbicacionCreadaPor")
+
+  @@map("users")
+}
+
+model Ubicacion {
+  id        String       @id @default(uuid())
+  name      String       @unique
+  type      LocationType
+  latitude  Float
+  longitude Float
+  /// PostGIS point, kept in sync with latitude/longitude for proximity
+  /// queries; not exposed on the generated Prisma Client.
+  geom      Unsupported("geography(Point, 4326)")?
+  createdById String?    @map("created_by_id")
+  createdBy   User?      @relation("UbicacionCreadaPor", fields: [createdById], references: [id])
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  viajesOrigen      Viaje[] @relation("ViajeOrigen")
+  viajesDestino     Viaje[] @relation("ViajeDestino")
+  cargasOrigen      Carga[] @relation("CargaOrigen")
+  cargasDestino     Carga[] @relation("CargaDestino")
+
+  @@map("ubicaciones")
+}
+
+/// A transportista's published route. Free to publish, no payment gate.
+model Viaje {
+  id             String    @id @default(uuid())
+  userId         String    @map("user_id")
+  user           User      @relation(fields: [userId], references: [id])
+  originId       String    @map("origin_id")
+  origin         Ubicacion @relation("ViajeOrigen", fields: [originId], references: [id])
+  destinationId  String    @map("destination_id")
+  destination    Ubicacion @relation("ViajeDestino", fields: [destinationId], references: [id])
+  availableCapacity String @map("available_capacity")
+  startDate      DateTime  @map("start_date")
+  endDate        DateTime  @map("end_date")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  postulaciones  Postulacion[]
+
+  @@map("viajes")
+}
+
+/// An empresa's published cargo need. Requires a confirmed payment before
+/// it becomes publicly searchable (see architecture-context.md Invariant #1).
+model Carga {
+  id             String      @id @default(uuid())
+  userId         String      @map("user_id")
+  user           User        @relation(fields: [userId], references: [id])
+  originId       String      @map("origin_id")
+  origin         Ubicacion   @relation("CargaOrigen", fields: [originId], references: [id])
+  destinationId  String      @map("destination_id")
+  destination    Ubicacion   @relation("CargaDestino", fields: [destinationId], references: [id])
+  description    String
+  neededDate     DateTime    @map("needed_date")
+  urgent         Boolean     @default(false)
+  status         CargaStatus @default(pendingPayment)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  postulaciones  Postulacion[]
+  payments       Payment[]
+
+  @@map("cargas")
+}
+
+/// The connection/contact record between a viaje and a carga.
+model Postulacion {
+  id          String            @id @default(uuid())
+  viajeId     String            @map("viaje_id")
+  viaje       Viaje             @relation(fields: [viajeId], references: [id])
+  cargaId     String            @map("carga_id")
+  carga       Carga             @relation(fields: [cargaId], references: [id])
+  initiatedById String          @map("initiated_by_id")
+  initiatedBy   User            @relation(fields: [initiatedById], references: [id])
+  status      PostulacionStatus @default(pending)
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  @@map("postulaciones")
+}
+
+/// The fixed listing fee payment tied to publishing a carga (Mercado Pago
+/// primary, Stripe documented fallback only — see architecture-context.md).
+model Payment {
+  id         String          @id @default(uuid())
+  cargaId    String          @map("carga_id")
+  carga      Carga           @relation(fields: [cargaId], references: [id])
+  userId     String          @map("user_id")
+  user       User            @relation(fields: [userId], references: [id])
+  provider   PaymentProvider @default(mercadoPago)
+  externalId String?         @map("external_id")
+  amount     Decimal
+  currency   String          @default("ARS")
+  status     PaymentStatus   @default(pending)
+  createdAt  DateTime        @default(now()) @map("created_at")
+  updatedAt  DateTime        @updatedAt @map("updated_at")
+
+  @@map("payments")
+}
