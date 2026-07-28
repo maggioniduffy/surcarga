@@ -28,13 +28,13 @@ export function FinalCta() {
               href="#precios"
               className="rounded-[11px] bg-surface-base px-[30px] py-4 font-display text-base font-bold text-white transition-colors hover:bg-surface-control"
             >
-              {finalCta.ctaEmpresa}
+              {finalCta.ctaShipper}
             </Link>
             <Link
               href="#como-funciona"
               className="rounded-[11px] border-[1.5px] border-surface-base/35 px-[26px] py-4 font-display text-base font-bold text-[#2a0d02] transition-colors hover:border-surface-base"
             >
-              {finalCta.ctaTransportista}
+              {finalCta.ctaCarrier}
             </Link>
           </div>
         </div>

@@ -43,25 +43,25 @@ export function PricingSection() {
       >
         <div className="min-w-[280px] flex-1">
           <div className="text-[11px] font-semibold tracking-[0.16em] text-status-published-text uppercase">
-            {pricing.transportistaBanner.kicker}
+            {pricing.carrierBanner.kicker}
           </div>
           <div className="mt-3 font-display text-[34px] leading-tight font-extrabold tracking-[-0.03em]">
-            {pricing.transportistaBanner.title}
+            {pricing.carrierBanner.title}
           </div>
           <p className="mt-2.5 max-w-[560px] text-[15px] leading-[1.6] text-ink-subtle">
-            {pricing.transportistaBanner.body}
+            {pricing.carrierBanner.body}
           </p>
         </div>
         <Link
           href="#contacto"
           className="rounded-[10px] border border-[#2f4a3a] px-6 py-3.5 font-display text-[15px] font-bold text-ink transition-colors hover:border-status-published-text"
         >
-          {pricing.transportistaBanner.cta}
+          {pricing.carrierBanner.cta}
         </Link>
       </div>
 
       <div className="mt-12 mb-5 text-[11px] font-semibold tracking-[0.16em] text-ink-faint uppercase">
-        {pricing.empresaLabel}
+        {pricing.shipperLabel}
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">

@@ -1,8 +1,3 @@
-export const brand = {
-  name: "Surcarga",
-  legalName: "Surcarga S.A.S.",
-} as const;
-
 export const landing = {
   header: {
     nav: [
@@ -11,8 +6,10 @@ export const landing = {
       { label: "Contacto", href: "#contacto" },
     ],
     locales: { active: "ES", alternate: "EN" },
-    ctaTransportista: "Soy transportista",
-    ctaEmpresa: "Necesito enviar carga",
+    ctaSignIn: "Ingresar",
+    ctaCarrier: "Soy transportista",
+    ctaShipper: "Necesito enviar carga",
+    ctaDashboard: "Ir al panel",
   },
 
   hero: {
@@ -21,8 +18,8 @@ export const landing = {
     titleAccent: "que ya viaja.",
     subtitle:
       "Conectamos transportistas con espacio libre en la ruta y empresas que necesitan mover equipos, insumos y herramientas a yacimientos, campamentos y bases. Sin intermediarios y sin comisión sobre el flete.",
-    ctaEmpresa: "Publicar mi carga",
-    ctaTransportista: "Publicar mi viaje — gratis",
+    ctaShipper: "Publicar mi carga",
+    ctaCarrier: "Publicar mi viaje — gratis",
     note: "Los transportistas publican gratis. Las empresas pagan un fee fijo por publicación.",
     stats: [
       { value: "38%", label: "km en vacío promedio" },
@@ -56,7 +53,7 @@ export const landing = {
   howItWorks: {
     eyebrow: "Cómo funciona",
     title: "Dos lados, un mismo viaje.",
-    transportista: {
+    carrier: {
       title: "Para transportistas",
       badge: "Gratis",
       steps: [
@@ -75,7 +72,7 @@ export const landing = {
       ],
       cta: "Publicar mi viaje",
     },
-    empresa: {
+    shipper: {
       title: "Para empresas",
       badge: "Fee por publicación",
       steps: [
@@ -203,13 +200,13 @@ export const landing = {
     title: "Pagás solo cuando publicás una carga.",
     subtitle:
       "Sin mensualidad, sin permanencia y sin comisión sobre el flete. El precio del transporte lo acuerdan las partes.",
-    transportistaBanner: {
+    carrierBanner: {
       kicker: "Transportistas",
       title: "Publicar tu viaje es gratis, siempre.",
       body: "Viajes ilimitados, alertas de carga en tu ruta y perfil con reputación. No cobramos nada sobre lo que facturás.",
       cta: "Crear cuenta de transportista",
     },
-    empresaLabel: "Empresas · fee por publicación",
+    shipperLabel: "Empresas · fee por publicación",
     tiers: [
       {
         name: "Publicación estándar",
@@ -282,8 +279,8 @@ export const landing = {
     title: "El próximo camión a Añelo sale en 40 minutos.",
     subtitle:
       "Sumate al marketplace: publicar tu viaje es gratis y publicar tu carga cuesta un fee fijo.",
-    ctaEmpresa: "Necesito enviar carga",
-    ctaTransportista: "Soy transportista",
+    ctaShipper: "Necesito enviar carga",
+    ctaCarrier: "Soy transportista",
   },
 
   footer: {

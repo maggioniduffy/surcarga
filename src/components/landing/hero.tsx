@@ -40,13 +40,13 @@ export function Hero() {
             href="#como-funciona"
             className="rounded-[11px] bg-brand px-7 py-4 font-display text-[16.5px] font-bold text-surface-base transition-colors hover:bg-brand-hover"
           >
-            {hero.ctaEmpresa}
+            {hero.ctaShipper}
           </Link>
           <Link
             href="#como-funciona"
             className="rounded-[11px] border border-line-control px-[26px] py-4 font-display text-[16.5px] font-bold text-ink transition-colors hover:border-line-control-hover"
           >
-            {hero.ctaTransportista}
+            {hero.ctaCarrier}
           </Link>
         </div>
 

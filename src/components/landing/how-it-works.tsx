@@ -95,17 +95,17 @@ export function HowItWorks() {
 
       <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <RoleColumn
-          title={howItWorks.transportista.title}
-          badge={howItWorks.transportista.badge}
-          steps={howItWorks.transportista.steps}
-          cta={howItWorks.transportista.cta}
+          title={howItWorks.carrier.title}
+          badge={howItWorks.carrier.badge}
+          steps={howItWorks.carrier.steps}
+          cta={howItWorks.carrier.cta}
           tone="neutral"
         />
         <RoleColumn
-          title={howItWorks.empresa.title}
-          badge={howItWorks.empresa.badge}
-          steps={howItWorks.empresa.steps}
-          cta={howItWorks.empresa.cta}
+          title={howItWorks.shipper.title}
+          badge={howItWorks.shipper.badge}
+          steps={howItWorks.shipper.steps}
+          cta={howItWorks.shipper.cta}
           tone="brand"
         />
       </div>
