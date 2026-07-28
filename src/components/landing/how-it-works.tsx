@@ -25,7 +25,7 @@ function RoleColumn({ title, badge, steps, cta, tone }: RoleColumnProps) {
       className={cn(
         "rounded-2xl border p-8",
         isBrand
-          ? "border-line-warm bg-surface-warm"
+          ? "on-dark-panel border-line-warm bg-surface-warm"
           : "border-line bg-surface-panel"
       )}
     >
@@ -75,7 +75,7 @@ function RoleColumn({ title, badge, steps, cta, tone }: RoleColumnProps) {
         className={cn(
           "mt-[30px] block rounded-[10px] py-3.5 text-center font-display text-[15px] font-bold transition-colors",
           isBrand
-            ? "bg-brand text-surface-base hover:bg-brand-hover"
+            ? "bg-brand text-on-brand hover:bg-brand-hover"
             : "border border-line-control text-ink hover:border-line-control-hover"
         )}
       >

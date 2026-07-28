@@ -1,9 +1,22 @@
 # UI Context
 
 ## Theme
-Dark-only, no light/dark toggle. The product's tone is industrial and operational — logistics for oilfield operations, not a consumer lifestyle app — and the confirmed visual direction (near-black background, vibrant orange accents, styled regional map) is modeled on Vaquia, an HSE platform for Vaca Muerta with the same dark, high-contrast aesthetic. Do not implement toggle logic unless explicitly requested.
+**Dark-first with an opt-in light theme.** The product's tone is industrial and operational — logistics for oilfield operations, not a consumer lifestyle app — and the primary visual direction (near-black background, vibrant orange accents, styled regional map) is modeled on Vaquia, an HSE platform for Vaca Muerta with the same dark, high-contrast aesthetic. Dark stays the default: an unset preference renders dark, and the theme does **not** follow `prefers-color-scheme`.
+
+Light is a warm off-white palette (`#f7f6f2` canvas, white panels) taken from the delivered `.dc.html` screens, which all shipped the same toggle. Mechanics:
+
+- `.dark` on `<html>` selects the dark scale; its absence selects light. The class is set by a synchronous inline script in `<head>` (`src/lib/theme.ts`) so a stored light preference never flashes the dark server-rendered markup — the pattern documented in `next/dist/docs/01-app/02-guides/preventing-flash-before-hydration.md`.
+- The preference persists to `localStorage` under `surcarga-theme`. `ThemeProvider` (`components/theme/`) holds the React state; `ThemeToggle` sits in both the landing header and the app header.
+
+**What flips and what doesn't.** Only the Surface, Border and Ink scales plus `--color-topo-line` are themed. Brand orange, the warm empresa/brand surfaces, and the status and route colors are **fixed** — identical in both themes — because the source designs pin them: a warm panel or a status chip stays dark-on-light so it reads as an accent block.
+
+Any container with a fixed dark fill must carry the `on-dark-panel` class, which re-declares the dark Surface/Border/Ink scale locally so nested `text-ink-*` and `border-line-*` utilities stay legible in light mode. `CardPanel`'s `warm`, `warning` and `published` tones apply it automatically.
+
+Text sitting on a brand-orange fill uses `--color-on-brand` (near-black, fixed) — never `--color-surface-base`, which flips to off-white.
 
 ## Content Language
+Spanish only — there is no locale switcher. The landing header's ES/EN control was carried over from the design artifacts and removed on 2026-07-28; it was decorative (no English dictionary exists behind it) and advertised a capability the product doesn't have.
+
 The UI language is Spanish (Argentina) — all copy the user sees (labels, buttons, form fields, status names, error messages, marketing content) must be written in Spanish. All code identifiers (variables, functions, component names, database columns, route segments) are English camelCase, regardless of the UI language. Copy must live in dedicated content/dictionary files (e.g. `content/es.ts` or `lib/i18n/es.json`), never hardcoded inline inside components — this keeps the two languages cleanly separated and makes future localization possible without touching component logic.
 
 ## Typography
@@ -45,6 +58,8 @@ Exact hex values are defined in `src/app/globals.css` and pulled from the delive
 ## Surface, Border, and Ink Scales
 
 Beyond the status colors, the theme defines three ordered scales in `globals.css`. Use these instead of ad hoc greys or `bg-zinc-*` utilities; shadcn's `--background`/`--foreground`/`--card`/`--border`/`--muted-foreground` alias into them.
+
+These three scales are the themed ones — the hex values below are the dark scale, held in the `.dark` block; `:root` holds the light counterparts (canvas `#f7f6f2`, panels `#ffffff`, primary ink `#17171d`, default card edge `#e6e2d9`). The warm variants listed under Surface and Border are **not** themed and keep their dark values in both.
 
 | Scale | Tokens (light → deep / faint → strong) |
 |---|---|

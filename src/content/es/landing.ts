@@ -5,7 +5,6 @@ export const landing = {
       { label: "Precios", href: "#precios" },
       { label: "Contacto", href: "#contacto" },
     ],
-    locales: { active: "ES", alternate: "EN" },
     ctaSignIn: "Ingresar",
     ctaCarrier: "Soy transportista",
     ctaShipper: "Necesito enviar carga",

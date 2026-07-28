@@ -51,7 +51,8 @@ export function WarningNote({
   return (
     <div
       className={cn(
-        "flex items-start gap-3 rounded-xl border border-[#3a3320] bg-[#171307] px-4 py-4",
+        // Pinned dark in both themes, like the other accent panels.
+        "on-dark-panel flex items-start gap-3 rounded-xl border border-[#3a3320] bg-[#171307] px-4 py-4",
         className
       )}
     >

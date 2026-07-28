@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { BrandMark } from "@/components/landing/brand-mark";
 import { UserChip, type AppUser } from "@/components/app-shell/user-chip";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { appShell } from "@/content/es";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
@@ -74,6 +75,8 @@ export function AppHeader({
 
         <div className="ml-auto flex items-center gap-3 sm:gap-3.5">
           {actions}
+
+          <ThemeToggle />
 
           <div className="hidden items-center border-line-subtle pl-3.5 sm:flex sm:border-l">
             <UserChip user={user} />

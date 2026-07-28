@@ -12,8 +12,10 @@ the design is the visual source of truth, the context files are the scope source
 
 Four things were deliberately **not** carried over from the artifacts:
 
-- **The light/dark theme toggle.** Every artifact shipped a `data-theme` switch and a
-  `cargasur-theme` localStorage key. `ui-context.md` says dark-only, no toggle.
+- ~~**The light/dark theme toggle.**~~ **Reversed 2026-07-28** — the toggle and the
+  artifacts' light palette were imported after all, and the ES/EN control was dropped
+  instead. See [[decision-light-theme]]. (The localStorage key is `surcarga-theme`, not the
+  artifacts' `cargasur-theme`.)
 - **"CargaSur".** Renamed to Surcarga throughout, same as the landing port.
 - **ETA / arrival-time copy.** "Llegada estimada 18:10" and "Ambos llegan hoy" were
   dropped per [[decision-no-geolocation-tracking]]; the declared ingress window and the

@@ -32,7 +32,7 @@ export function TierPicker({ label, options, value, onChange }: TierPickerProps)
             className={cn(
               "cursor-pointer rounded-[13px] border p-[22px] text-left transition-colors",
               selected
-                ? "border-brand bg-surface-warm-featured shadow-[0_0_0_4px_rgba(255,90,31,0.07)]"
+                ? "on-dark-panel border-brand bg-surface-warm-featured shadow-[0_0_0_4px_rgba(255,90,31,0.07)]"
                 : "border-line-raised bg-surface-sunken hover:border-line-control-hover"
             )}
           >

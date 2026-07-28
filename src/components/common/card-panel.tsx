@@ -2,12 +2,17 @@ import { cn } from "@/lib/utils";
 
 type PanelTone = "default" | "sunken" | "warm" | "warning" | "published";
 
+/*
+ * `warm`, `warning` and `published` are accent panels: the source designs pin them to
+ * their dark fill in both themes, so they carry `on-dark-panel` to keep the dark ink
+ * and line scale for everything nested inside them.
+ */
 const toneClasses: Record<PanelTone, string> = {
   default: "border-line bg-surface-panel",
   sunken: "border-line bg-surface-sunken",
-  warm: "border-line-warm-raised bg-surface-warm",
-  warning: "border-[#3a3320] bg-[#171307]",
-  published: "border-status-published-border bg-status-published-bg",
+  warm: "on-dark-panel border-line-warm-raised bg-surface-warm",
+  warning: "on-dark-panel border-[#3a3320] bg-[#171307]",
+  published: "on-dark-panel border-status-published-border bg-status-published-bg",
 };
 
 interface CardPanelProps extends React.ComponentProps<"div"> {

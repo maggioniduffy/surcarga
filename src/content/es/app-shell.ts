@@ -8,6 +8,13 @@ export const appShell = {
     homeLabel: "Ir al inicio",
   },
 
+  /** Light/dark switch, shared by the landing header and the app header. */
+  theme: {
+    toggle: "Cambiar tema",
+    switchToLight: "Cambiar a tema claro",
+    switchToDark: "Cambiar a tema oscuro",
+  },
+
   /** Nav sets differ by who is looking at the screen. */
   nav: {
     shipper: [

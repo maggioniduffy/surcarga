@@ -38,7 +38,7 @@ export function Hero() {
         <div className="mt-9 flex flex-wrap justify-center gap-3.5">
           <Link
             href="#como-funciona"
-            className="rounded-[11px] bg-brand px-7 py-4 font-display text-[16.5px] font-bold text-surface-base transition-colors hover:bg-brand-hover"
+            className="rounded-[11px] bg-brand px-7 py-4 font-display text-[16.5px] font-bold text-on-brand transition-colors hover:bg-brand-hover"
           >
             {hero.ctaShipper}
           </Link>

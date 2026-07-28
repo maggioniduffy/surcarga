@@ -3,6 +3,8 @@ import { shadcn } from "@clerk/ui/themes";
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { themeInitScript } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const archivo = Archivo({
@@ -27,14 +29,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // `dark` is the server-rendered default; the inline script below swaps it out
+    // before the first paint when the visitor has stored a light preference.
     <html
       lang="es"
+      suppressHydrationWarning
       className={cn("dark", "h-full", "antialiased", archivo.variable, ibmPlexSans.variable, "font-sans")}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-full flex flex-col">
-        <ClerkProvider appearance={{ theme: shadcn }}>
-          {children}
-        </ClerkProvider>
+        <ThemeProvider>
+          <ClerkProvider appearance={{ theme: shadcn }}>
+            {children}
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

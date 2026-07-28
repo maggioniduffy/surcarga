@@ -35,7 +35,9 @@ export function PricingSection() {
       </p>
 
       <div
-        className="mt-11 flex flex-wrap items-center gap-7 rounded-2xl border border-status-published-border p-[30px_32px]"
+        // `on-dark-panel` keeps both gradient stops on the dark scale, so the banner
+        // stays a dark green accent block in light mode instead of fading to white.
+        className="on-dark-panel mt-11 flex flex-wrap items-center gap-7 rounded-2xl border border-status-published-border p-[30px_32px]"
         style={{
           background:
             "linear-gradient(180deg, var(--color-status-published-bg), var(--color-surface-sunken))",
@@ -71,12 +73,12 @@ export function PricingSection() {
             className={cn(
               "relative rounded-2xl border p-[30px]",
               tier.featured
-                ? "border-brand bg-surface-warm-featured shadow-[0_0_0_4px_rgba(255,90,31,0.07)]"
+                ? "on-dark-panel border-brand bg-surface-warm-featured shadow-[0_0_0_4px_rgba(255,90,31,0.07)]"
                 : "border-line bg-surface-panel"
             )}
           >
             {"badge" in tier && tier.badge ? (
-              <span className="absolute -top-[11px] left-[30px] rounded-full bg-brand px-3 py-1 font-display text-[10.5px] font-bold tracking-[0.14em] text-surface-base uppercase">
+              <span className="absolute -top-[11px] left-[30px] rounded-full bg-brand px-3 py-1 font-display text-[10.5px] font-bold tracking-[0.14em] text-on-brand uppercase">
                 {tier.badge}
               </span>
             ) : null}
@@ -102,7 +104,7 @@ export function PricingSection() {
               className={cn(
                 "mt-6 block rounded-[10px] py-3.5 text-center font-display text-[14.5px] font-bold transition-colors",
                 tier.featured
-                  ? "bg-brand text-surface-base hover:bg-brand-hover"
+                  ? "bg-brand text-on-brand hover:bg-brand-hover"
                   : "border border-line-control text-ink hover:border-line-control-hover"
               )}
             >

@@ -15,7 +15,7 @@ export function FinalCta() {
             {finalCta.eyebrow}
           </div>
 
-          <h2 className="mx-auto mt-[18px] max-w-[820px] font-display text-[clamp(2.25rem,6vw,62px)] leading-[0.98] font-black tracking-[-0.04em] text-balance text-surface-base">
+          <h2 className="mx-auto mt-[18px] max-w-[820px] font-display text-[clamp(2.25rem,6vw,62px)] leading-[0.98] font-black tracking-[-0.04em] text-balance text-on-brand">
             {finalCta.title}
           </h2>
 
@@ -26,13 +26,13 @@ export function FinalCta() {
           <div className="mt-[34px] flex flex-wrap justify-center gap-3.5">
             <Link
               href="#precios"
-              className="rounded-[11px] bg-surface-base px-[30px] py-4 font-display text-base font-bold text-white transition-colors hover:bg-surface-control"
+              className="rounded-[11px] bg-on-brand px-[30px] py-4 font-display text-base font-bold text-white transition-colors hover:bg-on-brand-hover"
             >
               {finalCta.ctaShipper}
             </Link>
             <Link
               href="#como-funciona"
-              className="rounded-[11px] border-[1.5px] border-surface-base/35 px-[26px] py-4 font-display text-base font-bold text-[#2a0d02] transition-colors hover:border-surface-base"
+              className="rounded-[11px] border-[1.5px] border-on-brand/35 px-[26px] py-4 font-display text-base font-bold text-[#2a0d02] transition-colors hover:border-on-brand"
             >
               {finalCta.ctaCarrier}
             </Link>

@@ -28,7 +28,7 @@ export function CheckboxField({
         defaultChecked={defaultChecked}
         checked={checked}
         onCheckedChange={onCheckedChange}
-        className="size-[15px] border-line-control-hover data-checked:border-brand data-checked:bg-brand data-checked:text-surface-base"
+        className="size-[15px] border-line-control-hover data-checked:border-brand data-checked:bg-brand data-checked:text-on-brand"
       />
       <Label htmlFor={id} className="cursor-pointer text-sm font-normal text-ink-muted">
         {label}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { BrandMark } from "@/components/landing/brand-mark";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { landing } from "@/content/es";
 import { routes } from "@/lib/routes";
 
@@ -27,14 +28,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3.5">
-          <div className="hidden items-center gap-0.5 rounded-lg border border-line-raised p-[3px] sm:flex">
-            <span className="rounded-md bg-surface-control px-2.5 py-[5px] text-xs font-semibold text-ink">
-              {header.locales.active}
-            </span>
-            <span className="rounded-md px-2.5 py-[5px] text-xs font-semibold text-ink-faint">
-              {header.locales.alternate}
-            </span>
-          </div>
+          <ThemeToggle size={36} />
 
           <Show when="signed-out">
             <SignInButton>
@@ -56,7 +50,7 @@ export function SiteHeader() {
             <SignUpButton>
               <button
                 type="button"
-                className="inline-flex cursor-pointer rounded-[9px] bg-brand px-[18px] py-[11px] font-display text-sm font-bold text-surface-base transition-colors hover:bg-brand-hover"
+                className="inline-flex cursor-pointer rounded-[9px] bg-brand px-[18px] py-[11px] font-display text-sm font-bold text-on-brand transition-colors hover:bg-brand-hover"
               >
                 {header.ctaShipper}
               </button>
@@ -66,7 +60,7 @@ export function SiteHeader() {
           <Show when="signed-in">
             <Link
               href={routes.dashboard}
-              className="inline-flex rounded-[9px] bg-brand px-[18px] py-[11px] font-display text-sm font-bold text-surface-base transition-colors hover:bg-brand-hover"
+              className="inline-flex rounded-[9px] bg-brand px-[18px] py-[11px] font-display text-sm font-bold text-on-brand transition-colors hover:bg-brand-hover"
             >
               {header.ctaDashboard}
             </Link>

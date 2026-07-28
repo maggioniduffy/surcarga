@@ -5,45 +5,34 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Three groups of tokens:
+ *
+ * 1. Fixed — brand, warm brand panels, status and route colours. These carry the
+ *    same value in both themes because the source designs pin them: a warm panel
+ *    or a status chip stays dark-on-light so it reads as an accent block.
+ * 2. Themed — the surface, line and ink scales plus the topo lines. `:root` holds
+ *    the light values, `.dark` overrides them.
+ * 3. shadcn aliases — `--background`, `--border`, … alias into the themed scales.
+ */
 :root {
 
+  /* --- Fixed: brand --- */
   --color-brand: #ff5a1f;
   --color-brand-hover: #ff7038;
   --color-brand-link-hover: #ff7a4a;
+  /* Ink for content sitting on a brand-orange fill — near-black in both themes. */
+  --color-on-brand: #0a0a0f;
+  --color-on-brand-hover: #1e1e28;
 
-  /* Surface scale — near-black base with slightly lifted panels. */
-  --color-surface-base: #0a0a0f;
-  --color-surface-panel: #101017;
-  --color-surface-sunken: #0d0d14;
-  --color-surface-raised: #16161f;
-  --color-surface-control: #1e1e28;
-  /* Warm-tinted surfaces for empresa/brand-side panels. */
+  /* --- Fixed: warm-tinted surfaces for empresa/brand-side panels. --- */
   --color-surface-warm: #12100f;
   --color-surface-warm-raised: #1b1108;
   --color-surface-warm-featured: #12111a;
-
-  /* Border scale — hairline to visible control edges. */
-  --color-line-faint: #14141c;
-  --color-line-subtle: #1c1c26;
-  --color-line: #23232e;
-  --color-line-raised: #2a2a38;
-  --color-line-control: #2f2f3d;
-  --color-line-control-hover: #4a4a5c;
   --color-line-warm: #33241c;
   --color-line-warm-raised: #4a2a18;
 
-  /* Ink scale — primary text down to faint metadata. */
-  --color-ink: #e8e8ee;
-  --color-ink-strong: #d7d7e0;
-  --color-ink-muted: #c9c9d6;
-  --color-ink-subtle: #9a9aab;
-  --color-ink-faint: #71718a;
-  --color-ink-dim: #6b6b80;
-  --color-ink-ghost: #5f5f76;
-
-  /* Topographic route lines in decorative section backgrounds. */
-  --color-topo-line: #2b3c5c;
-
+  /* --- Fixed: status and route scales --- */
   --color-status-published-bg: #0e1712;
   --color-status-published-text: #2ecc71;
   --color-status-published-border: #1f3a29;
@@ -63,38 +52,64 @@
   --color-route-high: #2ecc71;
   --color-route-medium: #f0c419;
   --color-route-low: #ff5a1f;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+
+  /* --- Themed (light): warm off-white canvas with white panels. --- */
+  --color-surface-base: #f7f6f2;
+  --color-surface-panel: #ffffff;
+  --color-surface-sunken: #fbfaf7;
+  --color-surface-raised: #f3f1ea;
+  --color-surface-control: #efece3;
+
+  --color-line-faint: #efece4;
+  --color-line-subtle: #ece9e1;
+  --color-line: #e6e2d9;
+  --color-line-raised: #e0dbcd;
+  --color-line-control: #d8d3c7;
+  --color-line-control-hover: #b6b1a4;
+
+  --color-ink: #17171d;
+  --color-ink-strong: #262630;
+  --color-ink-muted: #3a3a44;
+  --color-ink-subtle: #5f5f6c;
+  --color-ink-faint: #82828d;
+  --color-ink-dim: #8e8e99;
+  --color-ink-ghost: #9a9aa4;
+
+  --color-topo-line: #c3cee2;
+
+  /* --- shadcn aliases --- */
+  --background: var(--color-surface-base);
+  --foreground: var(--color-ink);
+  --card: var(--color-surface-panel);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-surface-panel);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-ink);
+  --primary-foreground: var(--color-surface-panel);
+  --secondary: var(--color-surface-raised);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-surface-raised);
+  --muted-foreground: var(--color-ink-subtle);
+  --accent: var(--color-surface-control);
+  --accent-foreground: var(--color-ink);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: var(--color-line);
+  --input: var(--color-line-control);
+  --ring: var(--color-line-control-hover);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: var(--color-surface-panel);
+  --sidebar-foreground: var(--color-ink);
+  --sidebar-primary: var(--color-brand);
+  --sidebar-primary-foreground: var(--color-on-brand);
+  --sidebar-accent: var(--color-surface-control);
+  --sidebar-accent-foreground: var(--color-ink);
+  --sidebar-border: var(--color-line);
+  --sidebar-ring: var(--color-line-control-hover);
 }
 
 @theme inline {
@@ -106,6 +121,8 @@
   --color-brand: var(--color-brand);
   --color-brand-hover: var(--color-brand-hover);
   --color-brand-link-hover: var(--color-brand-link-hover);
+  --color-on-brand: var(--color-on-brand);
+  --color-on-brand-hover: var(--color-on-brand-hover);
 
   --color-surface-base: var(--color-surface-base);
   --color-surface-panel: var(--color-surface-panel);
@@ -190,69 +207,80 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Dark is the product's default theme — the industrial, high-contrast direction the
+ * screens were designed in. Only the themed scales flip; the fixed tokens above and
+ * the shadcn aliases (which point at these scales) carry over unchanged.
+ */
+.dark,
+.on-dark-panel {
+
+  /* Surface scale — near-black base with slightly lifted panels. */
+  --color-surface-base: #0a0a0f;
+  --color-surface-panel: #101017;
+  --color-surface-sunken: #0d0d14;
+  --color-surface-raised: #16161f;
+  --color-surface-control: #1e1e28;
+
+  /* Border scale — hairline to visible control edges. */
+  --color-line-faint: #14141c;
+  --color-line-subtle: #1c1c26;
+  --color-line: #23232e;
+  --color-line-raised: #2a2a38;
+  --color-line-control: #2f2f3d;
+  --color-line-control-hover: #4a4a5c;
+
+  /* Ink scale — primary text down to faint metadata. */
+  --color-ink: #e8e8ee;
+  --color-ink-strong: #d7d7e0;
+  --color-ink-muted: #c9c9d6;
+  --color-ink-subtle: #9a9aab;
+  --color-ink-faint: #71718a;
+  --color-ink-dim: #6b6b80;
+  --color-ink-ghost: #5f5f76;
+
+  /* Topographic route lines in decorative section backgrounds. */
+  --color-topo-line: #2b3c5c;
+}
+
 .dark {
-
-  --background: var(--color-surface-base);
-
-  --foreground: var(--color-ink);
-
-  --card: var(--color-surface-panel);
-
-  --card-foreground: var(--color-ink);
-
-  --popover: oklch(0.205 0 0);
-
-  --popover-foreground: oklch(0.985 0 0);
-
-  --primary: oklch(0.922 0 0);
-
-  --primary-foreground: oklch(0.205 0 0);
-
-  --secondary: oklch(0.269 0 0);
-
-  --secondary-foreground: oklch(0.985 0 0);
-
-  --muted: oklch(0.269 0 0);
-
-  --muted-foreground: var(--color-ink-subtle);
-
-  --accent: var(--color-surface-control);
-
-  --accent-foreground: var(--color-ink);
-
   --destructive: oklch(0.704 0.191 22.216);
+}
 
+/*
+ * Re-declaring the scales above is not enough for a panel nested inside a light page,
+ * for two reasons:
+ *
+ * 1. The shadcn aliases (`--foreground`, `--card`, `--border`, …) are declared on `:root`
+ *    as `var(--color-ink)` etc. Custom properties resolve where they are *declared*, so
+ *    they already computed against the light scale and do not recompute here. `.dark`
+ *    doesn't hit this because it sits on <html>, the same element as `:root`.
+ * 2. Text with no colour utility inherits `color` from <body> — i.e. light-mode ink.
+ *    The source designs sidestepped this by hardcoding `color:#e8e8ee` on every such
+ *    panel; setting `color` once here does the same job for the whole subtree.
+ *
+ * `border-border` on the base-layer `*` selector makes point 1 visible on borders too.
+ */
+.on-dark-panel {
+  --background: var(--color-surface-base);
+  --foreground: var(--color-ink);
+  --card: var(--color-surface-panel);
+  --card-foreground: var(--color-ink);
+  --popover: var(--color-surface-panel);
+  --popover-foreground: var(--color-ink);
+  --primary: var(--color-ink);
+  --primary-foreground: var(--color-surface-panel);
+  --secondary: var(--color-surface-raised);
+  --secondary-foreground: var(--color-ink);
+  --muted: var(--color-surface-raised);
+  --muted-foreground: var(--color-ink-subtle);
+  --accent: var(--color-surface-control);
+  --accent-foreground: var(--color-ink);
   --border: var(--color-line);
-
   --input: var(--color-line-control);
+  --ring: var(--color-line-control-hover);
 
-  --ring: oklch(0.556 0 0);
-
-  --chart-1: oklch(0.87 0 0);
-
-  --chart-2: oklch(0.556 0 0);
-
-  --chart-3: oklch(0.439 0 0);
-
-  --chart-4: oklch(0.371 0 0);
-
-  --chart-5: oklch(0.269 0 0);
-
-  --sidebar: oklch(0.205 0 0);
-
-  --sidebar-foreground: oklch(0.985 0 0);
-
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-
-  --sidebar-accent: oklch(0.269 0 0);
-
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-
-  --sidebar-border: oklch(1 0 0 / 10%);
-
-  --sidebar-ring: oklch(0.556 0 0);
+  color: var(--color-ink);
 }
 
 @layer base {
@@ -267,7 +295,18 @@
   }
   ::selection {
     background: var(--color-brand);
-    color: var(--color-surface-base);
+    color: var(--color-on-brand);
+  }
+  /* Theme switches should feel like a dimmer, not a cut. */
+  html {
+    transition:
+      background-color 250ms ease,
+      color 250ms ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      transition: none;
+    }
   }
 }
 

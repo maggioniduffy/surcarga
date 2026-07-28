@@ -329,7 +329,9 @@ function FreeCard() {
 
   return (
     <div
-      className="rounded-2xl border border-status-published-border p-6"
+      // `on-dark-panel` keeps both gradient stops on the dark scale, so this stays a
+      // dark green accent block in light mode instead of fading to white.
+      className="on-dark-panel rounded-2xl border border-status-published-border p-6"
       style={{
         background:
           "linear-gradient(180deg, var(--color-status-published-bg), var(--color-surface-sunken))",

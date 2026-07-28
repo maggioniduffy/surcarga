@@ -22,7 +22,7 @@ export function FormSteps({ label, steps }: FormStepsProps) {
               className={cn(
                 "flex size-6 items-center justify-center rounded-full font-display text-xs font-extrabold",
                 step.done
-                  ? "bg-brand text-surface-base"
+                  ? "bg-brand text-on-brand"
                   : "border border-line-raised text-ink-faint"
               )}
             >

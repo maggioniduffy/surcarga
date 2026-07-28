@@ -5,7 +5,7 @@ export function StatusBadge({ children, className }: React.ComponentProps<"span"
   return (
     <span
       className={cn(
-        "rounded-full bg-brand px-2.5 py-0.5 font-display text-[9.5px] font-bold tracking-[0.14em] text-surface-base uppercase",
+        "rounded-full bg-brand px-2.5 py-0.5 font-display text-[9.5px] font-bold tracking-[0.14em] text-on-brand uppercase",
         className
       )}
     >

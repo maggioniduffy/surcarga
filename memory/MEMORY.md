@@ -32,6 +32,7 @@ and the memory file is stale and should be corrected or removed.
 
 ## Screens
 
+- [Light theme + no ES/EN toggle](decision-light-theme.md) — dark-only was reversed on 2026-07-28; dark stays the default, only the surface/line/ink scales flip, and fixed-dark panels need `on-dark-panel`.
 - [App screens design source](decision-app-screens-design-source.md) — panel, publicar carga/viaje, buscar camiones and detalle viaje are ports of Claude Design artifacts, made responsive; the theme toggle, "CargaSur", ETA copy and match/compatibility language were deliberately dropped.
 - [Landing design source](decision-landing-design-source.md) — the landing page is a port of a delivered Claude Design artifact; brand is Surcarga, never "CargaSur".
 - [Landing copy scope conflicts](open-landing-copy-scope-conflicts.md) — ported copy still advertises USD pricing, verification claims, and invented stats/testimonials the context files don't back (tracking and AI matching are now resolved).

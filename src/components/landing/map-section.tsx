@@ -74,7 +74,7 @@ export function MapSection() {
                 </div>
               </dl>
 
-              <div className="mt-4 rounded-[9px] bg-brand py-[11px] text-center font-display text-sm font-bold text-surface-base">
+              <div className="mt-4 rounded-[9px] bg-brand py-[11px] text-center font-display text-sm font-bold text-on-brand">
                 {map.listing.cta}
               </div>
             </article>

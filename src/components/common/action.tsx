@@ -12,7 +12,7 @@ export const actionVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-brand text-surface-base hover:bg-brand-hover",
+        primary: "bg-brand text-on-brand hover:bg-brand-hover",
         outline:
           "border border-line-control text-ink hover:border-line-control-hover",
         quiet:
