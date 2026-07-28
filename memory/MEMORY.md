@@ -5,7 +5,9 @@ the files in `context/` — if a memory file and a context file disagree, `conte
 and the memory file is stale.
 
 - [Landing design source](decision-landing-design-source.md) — the landing page is a port of a delivered design artifact; brand is Surcarga, never "CargaSur".
-- [Landing copy scope conflicts](open-landing-copy-scope-conflicts.md) — ported landing copy advertises tracking, AI matching, USD pricing, and invented stats/testimonials that the context files don't back.
+- [Landing copy scope conflicts](open-landing-copy-scope-conflicts.md) — ported landing copy advertises USD pricing, verification claims, and invented stats/testimonials that the context files don't back (tracking and AI matching now resolved).
+- [No geolocation tracking](decision-no-geolocation-tracking.md) — position/ETA/live tracking is permanently deleted from the product, not deferred.
+- [AI matcher deferred](decision-ai-matcher-deferred.md) — matching is search + filters for now; the AI matcher must not appear anywhere in the app.
 
 ## Referenced but not yet written
 

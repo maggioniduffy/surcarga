@@ -26,6 +26,8 @@ Get a working Next.js + TypeScript + Tailwind + shadcn/ui project with the base 
 - Created the `memory/` directory that `AGENTS.md` and `progress-tracker.md` both referenced but which never existed. Note that three memory files linked from this tracker (`decision-stack-versions`, `decision-prisma7-driver-adapter`, `decision-schema-assumptions`) are still dangling — tracked in `memory/MEMORY.md`.
 - Verified: `npm run lint`, `npx tsc --noEmit`, and `npm run build` all pass. Confirmed every custom token compiles to a real utility class in the built CSS (a mistyped `@theme` name would fail silently), and confirmed all eleven sections plus the five FAQ buttons render in the SSR output. No headless-browser tooling is installed in this environment, so the page has not been visually screenshotted.
 
+- Resolved two of the landing copy's scope conflicts in `src/content/es.ts` (2026-07-27): **geolocation tracking permanently deleted** (feature card + its `tracking` glyph, pricing perk, offline/satellite FAQ, "seguís la carga" step; map section reframed from "tiempo real / camiones disponibles ahora" to published viajes) and the **AI matcher deferred** ("La IA matchea" → the transportistas on that route see it; matching/score language → search and filters). Added a "Fee fijo por publicación" feature card so the grid still fills six cells. `npx eslint src` and `npx tsc --noEmit` pass. See [[decision-no-geolocation-tracking]] and [[decision-ai-matcher-deferred]]; `project-overview.md` Out Of Scope updated.
+
 ## In Progress
 
 Nothing actively in progress.
@@ -39,7 +41,7 @@ Nothing actively in progress.
 - Wire actual auth (Supabase Auth assumed, unconfirmed) before building any `app/(dashboard)/layout.tsx` Server Layout Guard.
 
 ## Open Questions
-- **The landing page advertises features and figures the context files don't back** — ported verbatim from the design artifact at the user's direction, flagged rather than softened. See [[open-landing-copy-scope-conflicts]] for the itemised list: real-time GPS tracking + ETA and an offline/satellite driver app (explicitly Out Of Scope in project-overview.md), "la IA matchea" (no AI component exists in the Matching & Postulación Model), USD 19 / USD 39 listing fees (fee amount and currency are still open, and ARS was the presumed currency), transportista verification claims (CUIT/RUTA/titularidad — nothing in the schema models this), and invented stats (38%, 1.240 viajes/mes) plus three named fictional testimonials. None of this is a requirements source; all of it must be confirmed or replaced before launch.
+- **The landing page advertises features and figures the context files don't back** — ported verbatim from the design artifact at the user's direction, flagged rather than softened. Two of them are now resolved (tracking deleted, AI matcher deferred — see below). See [[open-landing-copy-scope-conflicts]] for what remains: USD 19 / USD 39 listing fees (fee amount and currency are still open, and ARS was the presumed currency), transportista verification claims (CUIT/RUTA/titularidad — nothing in the schema models this), and invented stats (38%, 1.240 viajes/mes) plus three named fictional testimonials. None of this is a requirements source; all of it must be confirmed or replaced before launch.
 - ORM: Prisma was assumed over Drizzle in architecture-context.md — confirm.
 - Database host: Supabase was assumed over Neon (bundles Auth + Storage) — confirm.
 - Auth provider: Supabase Auth was assumed over Auth.js, to pair with the Supabase Postgres pick — confirm.

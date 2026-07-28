@@ -48,7 +48,7 @@ export const landing = {
       {
         kicker: "Yacimiento / operación",
         title: "Necesita el insumo a tiempo, sin visibilidad",
-        body: "Nadie sabe qué transporte ya está yendo al pad ni cuándo llega. Cada demora en el ingreso se paga en equipos parados.",
+        body: "Nadie sabe qué transporte ya tiene viaje programado al pad ni con qué espacio libre. Cada envío que se posterga se paga en equipos parados.",
       },
     ],
   },
@@ -84,12 +84,12 @@ export const landing = {
           body: "Qué mandás, cuánto pesa, a dónde va y para cuándo. Pagás un fee fijo por publicación, sin mensualidad.",
         },
         {
-          title: "La IA matchea transportistas en tu ruta",
-          body: "Cruza ruta, ventana horaria, capacidad libre, tipo de carga y accesos autorizados al pad.",
+          title: "La ven los transportistas de esa ruta",
+          body: "Tu carga aparece en las búsquedas por ruta, región y fecha de quienes ya viajan por ahí, y te postulan.",
         },
         {
           title: "Coordinás el envío directamente",
-          body: "Elegís al transportista, acuerdan tarifa entre ustedes y seguís la carga hasta la entrega.",
+          body: "Elegís al transportista, acuerdan tarifa entre ustedes y coordinan la entrega sin intermediarios.",
         },
       ],
       cta: "Publicar una carga",
@@ -107,13 +107,8 @@ export const landing = {
       },
       {
         icon: "matching",
-        title: "Matching por ruta y ventana horaria",
-        body: "Score por desvío en km, compatibilidad de carga y horario de ingreso al yacimiento.",
-      },
-      {
-        icon: "tracking",
-        title: "Seguimiento en tiempo real",
-        body: "Posición, ETA al pad y aviso de demora en portería o en tramos de ripio.",
+        title: "Búsqueda por ruta y ventana horaria",
+        body: "Filtros por origen, destino, fecha y tipo de carga para encontrar el viaje que ya pasa por ahí.",
       },
       {
         icon: "documents",
@@ -130,12 +125,17 @@ export const landing = {
         title: "Alertas de carga en tu ruta",
         body: "Aviso al instante cuando aparece una solicitud compatible con el viaje que ya tenés.",
       },
+      {
+        icon: "payment",
+        title: "Fee fijo por publicación",
+        body: "La empresa paga por Mercado Pago y la carga queda visible apenas se confirma el pago.",
+      },
     ],
   },
 
   map: {
-    eyebrow: "Mapa en tiempo real",
-    title: "Camiones disponibles en la cuenca, ahora.",
+    eyebrow: "Mapa de la cuenca",
+    title: "Viajes publicados con espacio libre.",
     legend: [
       { label: "Alta disponibilidad", density: "high" },
       { label: "Moderada", density: "medium" },
@@ -162,10 +162,10 @@ export const landing = {
     corridors: {
       title: "Corredores activos",
       items: [
-        { route: "Neuquén – Añelo", trucks: "31 camiones", density: "high" },
-        { route: "Añelo – Cutral Có", trucks: "12 camiones", density: "medium" },
-        { route: "Añelo – Pad A-7", trucks: "3 camiones", density: "low" },
-        { route: "Rincón – Pad B-12", trucks: "18 camiones", density: "high" },
+        { route: "Neuquén – Añelo", trucks: "31 viajes", density: "high" },
+        { route: "Añelo – Cutral Có", trucks: "12 viajes", density: "medium" },
+        { route: "Añelo – Pad A-7", trucks: "3 viajes", density: "low" },
+        { route: "Rincón – Pad B-12", trucks: "18 viajes", density: "high" },
       ],
     },
   },
@@ -220,9 +220,9 @@ export const landing = {
         featured: false,
         perks: [
           "Publicación activa 7 días",
-          "Matching automático por ruta y fecha",
+          "Visible en las búsquedas por ruta y fecha",
           "Transportistas verificados",
-          "Seguimiento del envío",
+          "Aviso por WhatsApp en cada postulación",
         ],
       },
       {
@@ -268,11 +268,6 @@ export const landing = {
         question: "¿Cómo se verifica a los transportistas?",
         answer:
           "Validamos CUIT, titularidad de las unidades, seguro de transporte vigente, RUTA y habilitaciones especiales. Cada entrega deja calificación de puntualidad y estado de la carga en el perfil.",
-      },
-      {
-        question: "¿Funciona sin señal en los yacimientos?",
-        answer:
-          "Sí. La app del conductor funciona offline: guarda remitos, fotos y estados, y sincroniza al recuperar señal. En rutas de ripio sin cobertura tomamos posición vía satelital.",
       },
       {
         question: "¿Qué pasa si no encuentro transportista?",

@@ -52,7 +52,8 @@ Vaca Muerta Logística is a two-sided marketplace connecting long-distance truck
 
 ### Out Of Scope
 - Freight pricing negotiation, bidding, or commission-based transactions — the platform never takes a cut of freight value.
-- Turn-by-turn routing, live GPS tracking, or ETAs calculated via a routing API.
+- Turn-by-turn routing, live GPS tracking, or ETAs calculated via a routing API. Geolocation tracking of vehicles or shipments (including satellite positioning and an offline driver app) is **permanently out** — deleted from the product, not deferred. Confirmed 2026-07-27.
+- An AI/ML matcher. Matching is search + filters (route, region, dates, cargo type) plus the postulación action. An AI matcher is **deferred to a later version** and must not appear anywhere in the app — copy, UI, or code — until it is explicitly scoped. Decided 2026-07-27.
 - Operating outside the Vaca Muerta region or outside the oil and gas logistics sector.
 - General cargo/freight types unrelated to oil and gas field logistics (equipment, supplies, materials, tools only).
 - A full admin back-office UI covering users, cargas, viajes, payments, etc. — the only admin surface in scope right now is managing (edit/delete) ubicaciones catalog entries.
