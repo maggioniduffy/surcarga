@@ -1,6 +1,6 @@
 ---
 name: project-vaca-muerta-logistica
-description: Vaca Muerta Logística is the Next.js two-sided marketplace app being built in the vaca-muerta-logistica/ directory
+description: Vaca Muerta Logística is the Next.js two-sided marketplace app, scaffolded as the npm package `surcarga` at the repo root
 metadata:
   type: project
 ---
