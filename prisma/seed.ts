@@ -5,7 +5,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
-const ciudades = [
+const cities = [
   { name: "Rincón de los Sauces", latitude: -37.9, longitude: -68.9333 },
   { name: "Cutral Có", latitude: -38.9333, longitude: -69.2333 },
   { name: "Neuquén", latitude: -38.9516, longitude: -68.0591 },
@@ -17,22 +17,22 @@ const ciudades = [
   { name: "Plottier", latitude: -38.9667, longitude: -68.2333 },
 ] as const;
 
-const yacimientos = [{ name: "Loma Campana", latitude: -38.5167, longitude: -69.05 }] as const;
+const oilfields = [{ name: "Loma Campana", latitude: -38.5167, longitude: -69.05 }] as const;
 
 async function main() {
-  for (const ciudad of ciudades) {
-    await prisma.ubicacion.upsert({
-      where: { name: ciudad.name },
+  for (const city of cities) {
+    await prisma.location.upsert({
+      where: { name: city.name },
       update: {},
-      create: { ...ciudad, type: "ciudad" },
+      create: { ...city, type: "city" },
     });
   }
 
-  for (const yacimiento of yacimientos) {
-    await prisma.ubicacion.upsert({
-      where: { name: yacimiento.name },
+  for (const oilfield of oilfields) {
+    await prisma.location.upsert({
+      where: { name: oilfield.name },
       update: {},
-      create: { ...yacimiento, type: "yacimiento" },
+      create: { ...oilfield, type: "oilfield" },
     });
   }
 }
