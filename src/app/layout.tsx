@@ -1,3 +1,5 @@
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/ui/themes";
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
@@ -29,7 +31,11 @@ export default function RootLayout({
       lang="es"
       className={cn("dark", "h-full", "antialiased", archivo.variable, ibmPlexSans.variable, "font-sans")}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ClerkProvider appearance={{ theme: shadcn }}>
+          {children}
+        </ClerkProvider>
+      </body>
     </html>
   );
 }
