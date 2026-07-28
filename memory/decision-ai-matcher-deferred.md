@@ -11,7 +11,7 @@ version is plain **search and filters** (route, region, dates, cargo type) plus 
 postulación action, exactly as `project-overview.md` and `architecture-context.md`'s
 Matching & Postulación Model describe.
 
-Copy changed in `src/content/es.ts`: "La IA matchea transportistas en tu ruta" → "La ven los
+Copy changed in `src/content/es/landing.ts`: "La IA matchea transportistas en tu ruta" → "La ven los
 transportistas de esa ruta"; the "Matching por ruta y ventana horaria / Score por desvío en
 km" feature card → "Búsqueda por ruta y ventana horaria" with filter language; the
 "Matching automático por ruta y fecha" pricing perk → "Visible en las búsquedas por ruta y

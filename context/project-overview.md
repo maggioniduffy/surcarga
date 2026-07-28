@@ -33,7 +33,7 @@ Vaca Muerta Logística is a two-sided marketplace connecting long-distance truck
 - Role-differentiated dashboard shows an empresa their published cargas and incoming postulaciones, and shows a transportista their published viajes and outgoing postulaciones.
 
 ### Starter System Designs
-- **Users** — role-gated as `transportista` or `empresa`; role is set at signup and drives which forms, dashboard views, and payment paths are available.
+- **Users** — role-gated as `carrier` or `shipper`; role is set at signup and drives which forms, dashboard views, and payment paths are available.
 - **Viajes** — a transportista's published route: origin, destination, available capacity, travel dates. Free to publish.
 - **Cargas** — an empresa's published cargo need: origin, destination, cargo description, needed dates, urgency flag. Requires a paid listing fee before becoming searchable.
 - **Ubicaciones** — a curated, *extensible* catalog of Vaca Muerta locations with PostGIS coordinates; both viajes and cargas reference this catalog rather than accepting free-text locations. Seeded with the base cities (Rincón de los Sauces, Cutral Có, Neuquén, Añelo, Centenario, Cipolletti, Catriel, El Chañar, Plottier) and known yacimientos (e.g. Loma Campana). Any user — admin or a transportista/empresa publishing a viaje/carga — can add a new yacimiento or ciudad by name and geographic location if it's missing from the catalog. Only administrators can edit or delete catalog entries afterward.
@@ -42,13 +42,13 @@ Vaca Muerta Logística is a two-sided marketplace connecting long-distance truck
 ## Scope
 
 ### In Scope
-- Two public role types (transportista, empresa) with differentiated signup, publishing forms, and dashboards, plus a minimal `admin` role scoped only to moderating the ubicaciones catalog (see below).
+- Two public role types (`carrier`, `shipper`) with differentiated signup, publishing forms, and dashboards, plus a minimal `admin` role scoped only to moderating the locations catalog (see below).
 - Publishing, searching, and browsing viajes and cargas scoped to the Vaca Muerta region.
 - Fixed-fee payment flow for empresas publishing a carga, via Mercado Pago.
 - A map view (search/browse and detail pages) showing simplified, color-coded straight-line routes between catalog locations.
 - WhatsApp Business API notifications for key events (new postulación, payment confirmed, match confirmed), with email as a fallback channel.
 - A trip/cargo detail page and a role-differentiated dashboard.
-- An extensible ubicaciones catalog: any authenticated user (transportista, empresa, or admin) can add a missing yacimiento or ciudad (name + geographic location) while publishing a viaje/carga; only admins can edit or delete existing catalog entries.
+- An extensible locations catalog: any authenticated user (`carrier`, `shipper`, or `admin`) can add a missing yacimiento or ciudad (name + geographic location) while publishing a trip/cargo; only admins can edit or delete existing catalog entries.
 
 ### Out Of Scope
 - Freight pricing negotiation, bidding, or commission-based transactions — the platform never takes a cut of freight value.
@@ -56,7 +56,7 @@ Vaca Muerta Logística is a two-sided marketplace connecting long-distance truck
 - An AI/ML matcher. Matching is search + filters (route, region, dates, cargo type) plus the postulación action. An AI matcher is **deferred to a later version** and must not appear anywhere in the app — copy, UI, or code — until it is explicitly scoped. Decided 2026-07-27.
 - Operating outside the Vaca Muerta region or outside the oil and gas logistics sector.
 - General cargo/freight types unrelated to oil and gas field logistics (equipment, supplies, materials, tools only).
-- A full admin back-office UI covering users, cargas, viajes, payments, etc. — the only admin surface in scope right now is managing (edit/delete) ubicaciones catalog entries.
+- A full admin back-office UI covering users, cargos, trips, payments, etc. — the only admin surface in scope right now is managing (edit/delete) locations catalog entries.
 - Stripe as a live payment path — it exists only as a documented enterprise fallback, not something to build now unless explicitly requested.
 
 ## Success Criteria

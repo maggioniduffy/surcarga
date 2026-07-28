@@ -9,7 +9,7 @@ Decided 2026-07-27: **geolocation tracking is permanently deleted from Surcarga.
 later phase, not a backlog item — the product does not track vehicle or shipment position,
 does not compute ETAs, and has no driver positioning (GPS or satellite) feature.
 
-Removed from `src/content/es.ts` accordingly: the "Seguimiento en tiempo real" feature card
+Removed from `src/content/es/landing.ts` accordingly: the "Seguimiento en tiempo real" feature card
 (and its `tracking` glyph in `feature-icon.tsx`), the "Seguimiento del envío" pricing perk,
 the offline/satellite-positioning FAQ entry, and the "seguís la carga hasta la entrega"
 step wording. The map section was reframed from "Mapa en tiempo real / Camiones disponibles

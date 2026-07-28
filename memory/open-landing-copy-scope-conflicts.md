@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-The landing copy in `src/content/es.ts` was ported verbatim from the design artifact
+The landing copy in `src/content/es/landing.ts` was ported verbatim from the design artifact
 (see [[decision-landing-design-source]]) and asserts several things the context files do
 **not** back. None of it is confirmed product scope:
 

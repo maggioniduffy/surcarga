@@ -2,18 +2,36 @@
 
 Short, atomic facts and decisions for quick recall across sessions. These never override
 the files in `context/` — if a memory file and a context file disagree, `context/` wins
-and the memory file is stale.
+and the memory file is stale and should be corrected or removed.
 
-- [Landing design source](decision-landing-design-source.md) — the landing page is a port of a delivered design artifact; brand is Surcarga, never "CargaSur".
-- [Landing copy scope conflicts](open-landing-copy-scope-conflicts.md) — ported landing copy advertises USD pricing, verification claims, and invented stats/testimonials that the context files don't back (tracking and AI matching now resolved).
+## Project
+
+- [Project: Vaca Muerta Logística](project_vaca_muerta_logistica.md) — two-sided marketplace connecting transportistas and oil & gas empresas in Vaca Muerta; scaffolded as the npm package `surcarga` at the repo root.
+
+## Stack and infrastructure
+
+- [Stack assumptions](decision_stack_assumptions.md) — only Prisma and MapLibre GL are still assumptions; Supabase (DB + Storage), Clerk, Mercado Pago, WhatsApp, and Vercel are confirmed.
+- [Stack versions](decision_stack_versions.md) — confirmed installed: Next.js 16.2.12, Tailwind v4.3.3, Prisma 7.9.1.
+- [Prisma 7 driver adapter](decision_prisma7_driver_adapter.md) — Prisma 7 requires `@prisma/adapter-pg`; no `datasource url` in `schema.prisma`, connection lives in `prisma.config.ts` and the client constructor.
+- [Supabase client setup](decision-supabase-client-setup.md) — clients live in `src/lib/supabase/`; the session-refresh proxy helper is intentionally unwired because Clerk owns sessions.
+- [Auth is Clerk](decision_auth_clerk.md) — Clerk via Supabase's native Third-Party Auth; app-level session/role/ownership checks are the primary authorization layer because Prisma bypasses RLS.
+- [Clerk ↔ Next.js wiring](decision-clerk-nextjs-integration.md) — `@clerk/nextjs` v7 installed; `proxy.ts` needs `/__clerk/:path*`, auth pages live in `app/(auth)/`, and v7 uses `<Show when=...>` instead of `SignedIn`/`SignedOut`.
+
+## Data model
+
+- [English domain naming](decision-english-domain-naming.md) — the schema was renamed to English on 2026-07-28 (`Trip`, `Cargo`, `Location`, `Application`, `carrier`/`shipper`) via a hand-written data-preserving RENAME migration.
+
+- [Role model](decision_role_model.md) — `users.role` is `carrier` | `shipper` | `admin`, immutable after signup/grant; `admin` is scoped only to locations moderation.
+- [Locations catalog](decision_locations_catalog.md) — any authenticated user can add a location; only `admin` can edit or delete one.
+- [Schema assumptions](decision_schema_assumptions.md) — enum values and structural fields invented in `prisma/schema.prisma` that the context files don't literally specify; flagged for confirmation.
+
+## Product scope
+
 - [No geolocation tracking](decision-no-geolocation-tracking.md) — position/ETA/live tracking is permanently deleted from the product, not deferred.
 - [AI matcher deferred](decision-ai-matcher-deferred.md) — matching is search + filters for now; the AI matcher must not appear anywhere in the app.
 
-## Referenced but not yet written
+## Screens
 
-`context/progress-tracker.md` links these; the files were never created. Write them from
-the tracker's Completed / Open Questions sections when next touching that area.
-
-- `decision-stack-versions` — Next.js 16.2.12, Tailwind v4.3.3, Prisma 7.9.1.
-- `decision-prisma7-driver-adapter` — Prisma 7 requires the driver-adapter pattern (`@prisma/adapter-pg`).
-- `decision-schema-assumptions` — invented enum values and structural fields in `prisma/schema.prisma`.
+- [App screens design source](decision-app-screens-design-source.md) — panel, publicar carga/viaje, buscar camiones and detalle viaje are ports of Claude Design artifacts, made responsive; the theme toggle, "CargaSur", ETA copy and match/compatibility language were deliberately dropped.
+- [Landing design source](decision-landing-design-source.md) — the landing page is a port of a delivered Claude Design artifact; brand is Surcarga, never "CargaSur".
+- [Landing copy scope conflicts](open-landing-copy-scope-conflicts.md) — ported copy still advertises USD pricing, verification claims, and invented stats/testimonials the context files don't back (tracking and AI matching are now resolved).
