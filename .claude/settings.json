@@ -7,7 +7,14 @@
       "Bash(break)",
       "Bash(docker rm *)",
       "WebFetch(domain:claude.ai)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(command -v clerk)",
+      "Bash(clerk --version)",
+      "Bash(clerk doctor *)",
+      "Bash(python3 -)",
+      "Bash(python3 -c \"import json;d=json.load\\(open\\('package.json'\\)\\);print\\(json.dumps\\({**d.get\\('dependencies',{}\\),**d.get\\('devDependencies',{}\\)},indent=1\\)\\)\")",
+      "Bash(xargs sed -i 's/text-surface-base/text-on-brand/g')",
+      "Bash(npx next *)"
     ]
   }
 }
