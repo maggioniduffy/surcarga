@@ -51,4 +51,5 @@ direction is the brand. Light is an accommodation, not a co-equal mode.
   key `surcarga-theme`) per
   `next/dist/docs/01-app/02-guides/preventing-flash-before-hydration.md`; `<html>` carries
   `suppressHydrationWarning` and `ThemeProvider`'s lazy initializer reads back the class the
-  script set. Don't switch this to `useEffect` — it reintroduces the flash.
+  script set. Don't switch this to `useEffect` — it reintroduces the flash. The tag must go
+  through `<InlineScript>` — see [[decision-inline-script-wrapper]].

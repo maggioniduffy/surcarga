@@ -17,7 +17,10 @@ const cities = [
   { name: "Plottier", latitude: -38.9667, longitude: -68.2333 },
 ] as const;
 
-const oilfields = [{ name: "Loma Campana", latitude: -38.5167, longitude: -69.05 }] as const;
+const oilfields = [
+  { name: "Loma Campana", latitude: -38.5167, longitude: -69.05 },
+  { name: "Loma La Lata", latitude: -38.55, longitude: -68.75 },
+] as const;
 
 async function main() {
   for (const city of cities) {

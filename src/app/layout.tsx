@@ -3,6 +3,7 @@ import { shadcn } from "@clerk/ui/themes";
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
+import { InlineScript } from "@/components/common/inline-script";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { themeInitScript } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -37,7 +38,7 @@ export default function RootLayout({
       className={cn("dark", "h-full", "antialiased", archivo.variable, ibmPlexSans.variable, "font-sans")}
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <InlineScript html={themeInitScript} />
       </head>
       <body className="min-h-full flex flex-col">
         <ThemeProvider>

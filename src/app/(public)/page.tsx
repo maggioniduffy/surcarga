@@ -9,8 +9,23 @@ import { PricingSection } from "@/components/landing/pricing-section";
 import { FaqSection } from "@/components/landing/faq-section";
 import { FinalCta } from "@/components/landing/final-cta";
 import { SiteFooter } from "@/components/landing/site-footer";
+import { listLocations } from "@/lib/services/locations";
 
-export default function Home() {
+/**
+ * Rendered per request: a location any user adds while publishing is meant to
+ * be visible to everyone immediately (architecture-context.md, Location
+ * Catalog Model), so the catalog is never baked in at build time.
+ */
+export const dynamic = "force-dynamic";
+
+/**
+ * The map renders the real locations catalog; the hero counters, the recent
+ * listing, the corridor list and the testimonials stay empty until the trips
+ * service and a testimonials source exist.
+ */
+export default async function Home() {
+  const locations = await listLocations();
+
   return (
     <div className="flex flex-1 flex-col overflow-x-hidden bg-surface-base">
       <SiteHeader />
@@ -19,7 +34,7 @@ export default function Home() {
         <ProblemSection />
         <HowItWorks />
         <FeaturesGrid />
-        <MapSection />
+        <MapSection locations={locations} />
         <Testimonials />
         <PricingSection />
         <FaqSection />

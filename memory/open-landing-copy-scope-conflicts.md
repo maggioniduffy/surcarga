@@ -16,9 +16,12 @@ The landing copy in `src/content/es/landing.ts` was ported verbatim from the des
 - **Pricing** — USD 19 standard / USD 39 destacada, 48 h top-of-listing, 7-day active
   window, volume packs, fee-back-as-credit guarantee. The fee amount and currency are an
   open question in `progress-tracker.md`; ARS was the presumed currency, not USD.
-- **Fabricated figures and people** — 38% empty km, 1.240 viajes/mes, 0% commission, and
-  three named testimonials (Hugo Maidana, Valeria Correa, Damián Sosa) with quotes.
-  Invented for the mockup; there is no data source behind them.
+- ~~**Fabricated figures and people**~~ — resolved 2026-07-29: the 38% / 1.240 counters,
+  the three named testimonials and the "próximo camión sale en 40 minutos" CTA headline
+  were **removed** with the rest of the boilerplate data. The hero counters and the
+  testimonials grid now take props and render empty; only the `0%` commission figure
+  stayed, because zero commission is a product fact. See
+  [[decision-blank-content-no-sample-data]].
 - **Verification claims** — CUIT/titularidad/RUTA validation, "Transportistas
   verificados". No verification subsystem is modelled in the Prisma schema.
 
@@ -27,5 +30,5 @@ soften the copy, so the page currently advertises more than the architecture sup
 
 **How to apply:** Treat this copy as placeholder marketing, never as a requirements
 source. Before building any of the above, resolve it in `architecture-context.md` /
-`project-overview.md` first. Before the site goes public, the fabricated stats,
-testimonials, and prices must be replaced or confirmed.
+`project-overview.md` first. Pricing and the verification claims are what remains open
+before the site goes public.

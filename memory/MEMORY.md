@@ -23,6 +23,8 @@ and the memory file is stale and should be corrected or removed.
 
 - [Role model](decision_role_model.md) — `users.role` is `carrier` | `shipper` | `admin`, immutable after signup/grant; `admin` is scoped only to locations moderation.
 - [Locations catalog](decision_locations_catalog.md) — any authenticated user can add a location; only `admin` can edit or delete one.
+- [Locations stay in one table](decision-locations-single-table.md) — cities and yacimientos share `locations` via `LocationType`; `Loma La Lata` added to the seed and both maps project from real coordinates.
+- [Form taxonomies are unbacked](open-form-taxonomies-unbacked.md) — tipo de carga, requisitos, flexibilidad, carga/descarga and recurrence days render as controls with no Prisma column; schema + migration owed.
 - [Schema assumptions](decision_schema_assumptions.md) — enum values and structural fields invented in `prisma/schema.prisma` that the context files don't literally specify; flagged for confirmation.
 
 ## Product scope
@@ -32,6 +34,9 @@ and the memory file is stale and should be corrected or removed.
 
 ## Screens
 
+- [No sample data on the screens](decision-blank-content-no-sample-data.md) — every screen is a prop-driven shell with empty states; `src/content/es/` holds copy only, never records.
+- [Inline scripts go through `<InlineScript>`](decision-inline-script-wrapper.md) — a bare `<script>` in a component makes React error; the wrapper is `text/javascript` on the server, inert `text/plain` on the client.
+- [Locations degrade when the DB is unreachable](decision-locations-degrade-when-db-unreachable.md) — `listLocations()` returns `[]` on Prisma connection errors so the catalog screens render empty states instead of 500ing; temporary, revisit once Supabase is live.
 - [Light theme + no ES/EN toggle](decision-light-theme.md) — dark-only was reversed on 2026-07-28; dark stays the default, only the surface/line/ink scales flip, and fixed-dark panels need `on-dark-panel`.
 - [App screens design source](decision-app-screens-design-source.md) — panel, publicar carga/viaje, buscar camiones and detalle viaje are ports of Claude Design artifacts, made responsive; the theme toggle, "CargaSur", ETA copy and match/compatibility language were deliberately dropped.
 - [Landing design source](decision-landing-design-source.md) — the landing page is a port of a delivered Claude Design artifact; brand is Surcarga, never "CargaSur".

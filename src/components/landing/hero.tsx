@@ -1,8 +1,13 @@
 import Link from "next/link";
+import { NO_VALUE } from "@/components/common/empty-state";
 import { TopoLines } from "@/components/landing/topo-lines";
 import { landing } from "@/content/es";
 
-export function Hero() {
+/**
+ * Counter values keyed by the ids in `landing.hero.stats`; a stat with no
+ * measured value yet renders an em dash.
+ */
+export function Hero({ stats = {} }: { stats?: Readonly<Record<string, string>> }) {
   const { hero } = landing;
 
   return (
@@ -54,7 +59,7 @@ export function Hero() {
 
         <dl className="mt-[72px] flex flex-wrap items-center justify-center gap-x-14 gap-y-8">
           {hero.stats.map((stat, index) => (
-            <div key={stat.label} className="flex items-center gap-x-14">
+            <div key={stat.id} className="flex items-center gap-x-14">
               {index > 0 && (
                 <span aria-hidden className="hidden h-12 w-px bg-line-subtle sm:block" />
               )}
@@ -62,7 +67,7 @@ export function Hero() {
                 <dt className="sr-only">{stat.label}</dt>
                 <dd>
                   <div className="font-display text-[34px] font-extrabold tracking-[-0.03em]">
-                    {stat.value}
+                    {("value" in stat ? stat.value : stats[stat.id]) ?? NO_VALUE}
                   </div>
                   <div className="mt-1 text-[13px] text-ink-faint">{stat.label}</div>
                 </dd>

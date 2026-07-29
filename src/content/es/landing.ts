@@ -1,3 +1,8 @@
+/**
+ * Landing copy. Marketing sections are copy through and through; the two
+ * data-backed blocks — the hero counters and the map's recent listing /
+ * corridor list — only keep their labels and arrive filled from the services.
+ */
 export const landing = {
   header: {
     nav: [
@@ -20,10 +25,14 @@ export const landing = {
     ctaShipper: "Publicar mi carga",
     ctaCarrier: "Publicar mi viaje — gratis",
     note: "Los transportistas publican gratis. Las empresas pagan un fee fijo por publicación.",
+    /**
+     * `value` is only set where the figure is a product fact rather than a
+     * measurement — the rest come from the trips service.
+     */
     stats: [
-      { value: "38%", label: "km en vacío promedio" },
-      { value: "1.240", label: "viajes publicados / mes" },
-      { value: "0%", label: "comisión sobre el flete" },
+      { id: "emptyKm", label: "km en vacío promedio" },
+      { id: "monthlyTrips", label: "viajes publicados / mes" },
+      { id: "commission", label: "comisión sobre el flete", value: "0%" },
     ],
   },
 
@@ -137,61 +146,24 @@ export const landing = {
       { label: "Moderada", density: "medium" },
       { label: "Baja", density: "low" },
     ],
-    updatedAt: "Actualizado hace 2 min",
-    nodes: {
-      rincon: "Rincón de los Sauces",
-      anelo: "Añelo",
-      cutralCo: "Cutral Có",
-      neuquen: "Neuquén Capital",
-    },
+    empty: "Todavía no hay viajes publicados en la cuenca.",
     listing: {
       kicker: "Publicación reciente",
-      age: "hace 4 min",
-      route: "Rincón → Pad B-12",
-      body: "Semi con 8 m libres, jueves 06:00. Acepta pallets, skids y herramienta liviana.",
       capacityLabel: "Espacio libre",
-      capacityValue: "8 m / 9 t",
       ratingLabel: "Reputación",
-      ratingValue: "4,9 ★",
       cta: "Enviar solicitud de carga",
+      empty: "Todavía no hay publicaciones recientes.",
     },
     corridors: {
       title: "Corredores activos",
-      items: [
-        { route: "Neuquén – Añelo", trucks: "31 viajes", density: "high" },
-        { route: "Añelo – Cutral Có", trucks: "12 viajes", density: "medium" },
-        { route: "Añelo – Pad A-7", trucks: "3 viajes", density: "low" },
-        { route: "Rincón – Pad B-12", trucks: "18 viajes", density: "high" },
-      ],
+      empty: "Todavía no hay corredores con viajes publicados.",
     },
   },
 
   testimonials: {
     eyebrow: "Testimonios",
     title: "Quienes mueven la cuenca todos los días.",
-    items: [
-      {
-        quote:
-          "Publico el viaje antes de salir y me llegan las cargas que me sirven. El flete lo arreglo yo, nadie me saca comisión.",
-        initials: "HM",
-        name: "Hugo Maidana",
-        role: "Transportista, flota de 6 unidades",
-      },
-      {
-        quote:
-          "Pago un fee por publicación y listo. Antes contrataba un camión entero para seis pallets: la diferencia es enorme.",
-        initials: "VC",
-        name: "Valeria Correa",
-        role: "Compras, empresa de servicios de fractura",
-      },
-      {
-        quote:
-          "Ahora sé qué transporte ya viene al pad y con qué permiso de ingreso. Dejamos de esperar sin saber.",
-        initials: "DS",
-        name: "Damián Sosa",
-        role: "Logística de yacimiento, Añelo",
-      },
-    ],
+    empty: "Todavía no hay testimonios publicados.",
   },
 
   pricing: {
@@ -275,7 +247,7 @@ export const landing = {
 
   finalCta: {
     eyebrow: "Empezá hoy",
-    title: "El próximo camión a Añelo sale en 40 minutos.",
+    title: "Publicá tu viaje o tu carga hoy.",
     subtitle:
       "Sumate al marketplace: publicar tu viaje es gratis y publicar tu carga cuesta un fee fijo.",
     ctaShipper: "Necesito enviar carga",

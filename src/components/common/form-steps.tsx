@@ -2,28 +2,28 @@ import { cn } from "@/lib/utils";
 
 interface FormStepsProps {
   label: string;
-  steps: readonly { label: string; done: boolean }[];
+  steps: readonly { label: string }[];
+  /** Index of the step the form is on; earlier steps read as done. */
+  current: number;
 }
 
 /** Numbered step trail beside a publishing form's title. */
-export function FormSteps({ label, steps }: FormStepsProps) {
+export function FormSteps({ label, steps, current }: FormStepsProps) {
   return (
     <ol aria-label={label} className="flex flex-wrap items-center gap-x-3.5 gap-y-2 text-[13px]">
-      {steps.map((step, index) => (
+      {steps.map((step, index) => {
+        const done = index <= current;
+        return (
         <li key={step.label} className="flex items-center gap-3.5">
           <span
-            className={cn(
-              "flex items-center gap-2.5",
-              step.done ? "text-ink" : "text-ink-faint"
-            )}
+            aria-current={index === current ? "step" : undefined}
+            className={cn("flex items-center gap-2.5", done ? "text-ink" : "text-ink-faint")}
           >
             <span
               aria-hidden
               className={cn(
                 "flex size-6 items-center justify-center rounded-full font-display text-xs font-extrabold",
-                step.done
-                  ? "bg-brand text-on-brand"
-                  : "border border-line-raised text-ink-faint"
+                done ? "bg-brand text-on-brand" : "border border-line-raised text-ink-faint"
               )}
             >
               {index + 1}
@@ -34,7 +34,8 @@ export function FormSteps({ label, steps }: FormStepsProps) {
             <span aria-hidden className="h-px w-5 bg-line-raised" />
           ) : null}
         </li>
-      ))}
+        );
+      })}
     </ol>
   );
 }

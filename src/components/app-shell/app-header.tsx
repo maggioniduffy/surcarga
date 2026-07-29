@@ -17,7 +17,8 @@ export interface NavItem {
 
 interface AppHeaderProps {
   nav: readonly NavItem[];
-  user: AppUser;
+  /** `null` on the public screens, where there may be no session. */
+  user: AppUser | null;
   /** Highlighted nav entry for the current screen. */
   activeHref?: string;
   /** Short label shown next to the logo instead of a nav (dashboard style). */
@@ -79,7 +80,16 @@ export function AppHeader({
           <ThemeToggle />
 
           <div className="hidden items-center border-line-subtle pl-3.5 sm:flex sm:border-l">
-            <UserChip user={user} />
+            {user ? (
+              <UserChip user={user} />
+            ) : (
+              <Link
+                href={routes.signIn}
+                className="text-[13px] font-semibold text-ink-subtle transition-colors hover:text-ink"
+              >
+                {appShell.header.signIn}
+              </Link>
+            )}
           </div>
 
           <button
@@ -98,7 +108,17 @@ export function AppHeader({
         <div className="border-t border-line-subtle bg-surface-base px-6 pt-4 pb-6 sm:px-8 lg:hidden">
           <div className="mx-auto flex flex-col gap-1" style={{ maxWidth: width }}>
             <div className="mb-3 sm:hidden">
-              <UserChip user={user} compact={false} />
+              {user ? (
+                <UserChip user={user} compact={false} />
+              ) : (
+                <Link
+                  href={routes.signIn}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-[15px] font-semibold text-brand"
+                >
+                  {appShell.header.signIn}
+                </Link>
+              )}
             </div>
             {nav.map((item) => (
               <Link

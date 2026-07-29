@@ -2,32 +2,38 @@ import Link from "next/link";
 import { ChevronLeft, Clock } from "lucide-react";
 import { AppFooter } from "@/components/app-shell/app-footer";
 import { AppHeader } from "@/components/app-shell/app-header";
+import type { AppUser } from "@/components/app-shell/user-chip";
 import { ActionButton, InlineLink } from "@/components/common/action";
 import { CardEyebrow, CardHeader, CardPanel } from "@/components/common/card-panel";
+import { EmptyState, NO_VALUE } from "@/components/common/empty-state";
 import { AlertIcon, CheckIcon } from "@/components/common/icons";
-import { DensityDot, StatusBadge, TagPill, type TagTone } from "@/components/common/pills";
+import { DensityDot, StatusBadge, TagPill } from "@/components/common/pills";
 import { RouteArrow } from "@/components/common/route-arrow";
 import { StopTimeline } from "@/components/trip/stop-timeline";
+import type { TripDetailData } from "@/components/trip/trip-data";
 import { appShell, tripDetail } from "@/content/es";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 const WIDTH = "1240px";
 
-export function TripDetailView() {
+interface TripDetailViewProps {
+  user: AppUser | null;
+  /** `null` while the trip service does not exist, or when the id is unknown. */
+  trip: TripDetailData | null;
+}
+
+export function TripDetailView({ user, trip }: TripDetailViewProps) {
   return (
     <div className="flex flex-1 flex-col bg-surface-base">
       <AppHeader
         width={WIDTH}
         nav={appShell.nav.shipper}
         activeHref={routes.searchTrucks}
-        user={tripDetail.user}
+        user={user}
       />
 
-      <main
-        className="mx-auto w-full flex-1 px-6 pt-6 pb-20 sm:px-8"
-        style={{ maxWidth: WIDTH }}
-      >
+      <main className="mx-auto w-full flex-1 px-6 pt-6 pb-20 sm:px-8" style={{ maxWidth: WIDTH }}>
         <Link
           href={tripDetail.back.href}
           className="inline-flex items-center gap-2 text-[13.5px] text-ink-subtle transition-colors hover:text-ink"
@@ -38,17 +44,17 @@ export function TripDetailView() {
 
         <div className="mt-5 grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_372px]">
           <div className="flex flex-col gap-5">
-            <HeadlineCard />
-            <StopsCard />
-            <UnitCard />
-            <DocumentsCard />
-            <ReputationCard />
+            <HeadlineCard trip={trip} />
+            <StopsCard trip={trip} />
+            <UnitCard trip={trip} />
+            <DocumentsCard trip={trip} />
+            <ReputationCard trip={trip} />
           </div>
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-[92px]">
-            <CarrierCard />
-            <RequestCard />
-            <OtherTripsCard />
+            <CarrierCard trip={trip} />
+            <RequestCard trip={trip} />
+            <OtherTripsCard trip={trip} />
           </aside>
         </div>
       </main>
@@ -58,28 +64,36 @@ export function TripDetailView() {
   );
 }
 
-function HeadlineCard() {
+function HeadlineCard({ trip }: { trip: TripDetailData | null }) {
+  if (!trip) {
+    return (
+      <CardPanel className="p-6 sm:p-[30px]">
+        <EmptyState>{tripDetail.empty}</EmptyState>
+      </CardPanel>
+    );
+  }
+
   return (
     <CardPanel className="p-6 sm:p-[30px]">
       <div className="flex flex-wrap items-center gap-2.5">
-        <StatusBadge>{tripDetail.badges.featured}</StatusBadge>
+        {trip.featured ? <StatusBadge>{tripDetail.badges.featured}</StatusBadge> : null}
         <span className="rounded-full border border-status-published-border bg-status-published-bg px-2.5 py-0.5 font-display text-[10px] font-bold tracking-[0.14em] text-status-published-text uppercase">
           {tripDetail.badges.available}
         </span>
-        <span className="text-[12.5px] text-ink-faint">{tripDetail.reference}</span>
+        <span className="text-[12.5px] text-ink-faint">{trip.reference}</span>
       </div>
 
       <h1 className="mt-[18px] flex flex-wrap items-center gap-x-4 gap-y-2 font-display text-[clamp(2rem,7vw,44px)] leading-[1.02] font-black tracking-[-0.035em]">
-        <span>{tripDetail.title.origin}</span>
+        <span>{trip.origin}</span>
         <RouteArrow width={34} />
-        <span>{tripDetail.title.destination}</span>
+        <span>{trip.destination}</span>
       </h1>
 
       <p className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[15px] text-ink-subtle">
-        {tripDetail.meta.map((item, index) => (
+        {trip.meta.map((item, index) => (
           <span key={item} className="flex items-center gap-2.5">
             {item}
-            {index < tripDetail.meta.length - 1 ? (
+            {index < trip.meta.length - 1 ? (
               <span aria-hidden className="text-line-control-hover">
                 ·
               </span>
@@ -98,7 +112,7 @@ function HeadlineCard() {
                 "accent" in metric && metric.accent && "text-brand"
               )}
             >
-              {metric.value}
+              {trip.metrics[metric.id] ?? NO_VALUE}
             </dd>
           </div>
         ))}
@@ -107,81 +121,98 @@ function HeadlineCard() {
   );
 }
 
-function StopsCard() {
+function StopsCard({ trip }: { trip: TripDetailData | null }) {
+  const stops = trip?.stops ?? [];
+
   return (
     <CardPanel className="p-6 sm:p-[30px]">
       <CardEyebrow>{tripDetail.stops.eyebrow}</CardEyebrow>
-      <StopTimeline stops={tripDetail.stops.items} />
+      {stops.length === 0 ? (
+        <EmptyState className="mt-5">{tripDetail.stops.empty}</EmptyState>
+      ) : (
+        <StopTimeline stops={stops} />
+      )}
     </CardPanel>
   );
 }
 
-function UnitCard() {
+function UnitCard({ trip }: { trip: TripDetailData | null }) {
   const { unit } = tripDetail;
+  const data = trip?.unit ?? null;
 
   return (
     <CardPanel className="p-6 sm:p-[30px]">
       <CardEyebrow>{unit.eyebrow}</CardEyebrow>
 
-      <div className="mt-[22px] grid grid-cols-1 gap-x-[26px] gap-y-7 md:grid-cols-2">
-        <dl className="flex flex-col gap-3.5">
-          {unit.rows.map((row) => (
-            <div key={row.label} className="flex justify-between gap-4 text-[14.5px]">
-              <dt className="text-ink-faint">{row.label}</dt>
-              <dd className="m-0 text-right font-medium">{row.value}</dd>
+      {!data ? (
+        <EmptyState className="mt-5">{unit.empty}</EmptyState>
+      ) : (
+        <div className="mt-[22px] grid grid-cols-1 gap-x-[26px] gap-y-7 md:grid-cols-2">
+          <dl className="flex flex-col gap-3.5">
+            {data.rows.map((row) => (
+              <div key={row.label} className="flex justify-between gap-4 text-[14.5px]">
+                <dt className="text-ink-faint">{row.label}</dt>
+                <dd className="m-0 text-right font-medium">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div>
+            <div className="mb-3 text-[13px] text-ink-faint">{unit.acceptsLabel}</div>
+            <div className="flex flex-wrap gap-2">
+              {data.accepts.map((item) => (
+                <TagPill key={item}>{item}</TagPill>
+              ))}
             </div>
-          ))}
-        </dl>
 
-        <div>
-          <div className="mb-3 text-[13px] text-ink-faint">{unit.acceptsLabel}</div>
-          <div className="flex flex-wrap gap-2">
-            {unit.accepts.map((item) => (
-              <TagPill key={item}>{item}</TagPill>
-            ))}
-          </div>
-
-          <div className="mt-[18px] mb-3 text-[13px] text-ink-faint">{unit.rejectsLabel}</div>
-          <div className="flex flex-wrap gap-2">
-            {unit.rejects.map((item) => (
-              <TagPill key={item} tone="muted">
-                {item}
-              </TagPill>
-            ))}
+            <div className="mt-[18px] mb-3 text-[13px] text-ink-faint">{unit.rejectsLabel}</div>
+            <div className="flex flex-wrap gap-2">
+              {data.rejects.map((item) => (
+                <TagPill key={item} tone="muted">
+                  {item}
+                </TagPill>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </CardPanel>
   );
 }
 
-function DocumentsCard() {
+function DocumentsCard({ trip }: { trip: TripDetailData | null }) {
   const { documents } = tripDetail;
+  const items = trip?.documents ?? [];
 
   return (
     <CardPanel className="p-6 sm:p-[30px]">
       <CardEyebrow>{documents.eyebrow}</CardEyebrow>
-      <ul className="mt-5 grid grid-cols-1 gap-x-[26px] gap-y-3 md:grid-cols-2">
-        {documents.items.map((item) => (
-          <li
-            key={item.id}
-            className={cn(
-              "flex items-center gap-2.5 text-[14.5px]",
-              item.ok ? "text-ink-muted" : "text-ink-subtle"
-            )}
-          >
-            {item.ok ? <CheckIcon /> : <AlertIcon size={16} />}
-            {item.label}
-            <span className="ml-auto shrink-0 text-[13px] text-ink-faint">{item.meta}</span>
-          </li>
-        ))}
-      </ul>
+      {items.length === 0 ? (
+        <EmptyState className="mt-5">{documents.empty}</EmptyState>
+      ) : (
+        <ul className="mt-5 grid grid-cols-1 gap-x-[26px] gap-y-3 md:grid-cols-2">
+          {items.map((item) => (
+            <li
+              key={item.id}
+              className={cn(
+                "flex items-center gap-2.5 text-[14.5px]",
+                item.ok ? "text-ink-muted" : "text-ink-subtle"
+              )}
+            >
+              {item.ok ? <CheckIcon /> : <AlertIcon size={16} />}
+              {item.label}
+              <span className="ml-auto shrink-0 text-[13px] text-ink-faint">{item.meta}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </CardPanel>
   );
 }
 
-function ReputationCard() {
+function ReputationCard({ trip }: { trip: TripDetailData | null }) {
   const { reputation } = tripDetail;
+  const data = trip?.reputation ?? null;
 
   return (
     <CardPanel className="p-6 sm:p-[30px]">
@@ -194,40 +225,54 @@ function ReputationCard() {
         }
       />
 
-      <dl className="mt-[22px] grid grid-cols-2 gap-[22px] md:grid-cols-4">
-        {reputation.stats.map((stat) => (
-          <div key={stat.id}>
-            <dd
-              className={cn(
-                "m-0 font-display text-[28px] font-extrabold tracking-[-0.03em]",
-                "accent" in stat && stat.accent && "text-brand"
-              )}
-            >
-              {stat.value}
-            </dd>
-            <dt className="mt-1 text-[12.5px] text-ink-faint">{stat.label}</dt>
-          </div>
-        ))}
-      </dl>
+      {!data || data.stats.length === 0 ? (
+        <EmptyState className="mt-[22px]">{reputation.empty}</EmptyState>
+      ) : (
+        <>
+          <dl className="mt-[22px] grid grid-cols-2 gap-[22px] md:grid-cols-4">
+            {data.stats.map((stat) => (
+              <div key={stat.id}>
+                <dd
+                  className={cn(
+                    "m-0 font-display text-[28px] font-extrabold tracking-[-0.03em]",
+                    stat.accent && "text-brand"
+                  )}
+                >
+                  {stat.value ?? NO_VALUE}
+                </dd>
+                <dt className="mt-1 text-[12.5px] text-ink-faint">{stat.label}</dt>
+              </div>
+            ))}
+          </dl>
 
-      <ul className="mt-[26px] flex flex-col gap-3.5 border-t border-line-subtle pt-[22px]">
-        {reputation.reviews.map((review) => (
-          <li key={review.id}>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span className="text-sm font-semibold">{review.author}</span>
-              <span className="text-[13px] text-brand">{review.rating}</span>
-              <span className="ml-auto text-[12.5px] text-ink-ghost">{review.date}</span>
-            </div>
-            <p className="mt-1.5 text-sm leading-[1.55] text-ink-subtle">{review.body}</p>
-          </li>
-        ))}
-      </ul>
+          <ul className="mt-[26px] flex flex-col gap-3.5 border-t border-line-subtle pt-[22px]">
+            {data.reviews.map((review) => (
+              <li key={review.id}>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <span className="text-sm font-semibold">{review.author}</span>
+                  <span className="text-[13px] text-brand">{review.rating}</span>
+                  <span className="ml-auto text-[12.5px] text-ink-ghost">{review.date}</span>
+                </div>
+                <p className="mt-1.5 text-sm leading-[1.55] text-ink-subtle">{review.body}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </CardPanel>
   );
 }
 
-function CarrierCard() {
-  const { carrier } = tripDetail;
+function CarrierCard({ trip }: { trip: TripDetailData | null }) {
+  const carrier = trip?.carrier ?? null;
+
+  if (!carrier) {
+    return (
+      <CardPanel className="p-6">
+        <EmptyState>{tripDetail.carrier.empty}</EmptyState>
+      </CardPanel>
+    );
+  }
 
   return (
     <CardPanel className="p-6">
@@ -246,21 +291,23 @@ function CarrierCard() {
 
       <div className="mt-4 flex flex-wrap gap-2">
         {carrier.tags.map((tag) => (
-          <TagPill key={tag.label} tone={tag.tone as TagTone} className="text-xs font-semibold">
+          <TagPill key={tag.label} tone={tag.tone} className="text-xs font-semibold">
             {tag.label}
           </TagPill>
         ))}
       </div>
 
-      <div className="mt-[18px] flex items-center gap-2.5 border-t border-line-subtle pt-4 text-[13.5px] text-ink-subtle">
-        <Clock size={15} className="shrink-0 text-ink-faint" aria-hidden />
-        {carrier.responseTime}
-      </div>
+      {carrier.responseTime ? (
+        <div className="mt-[18px] flex items-center gap-2.5 border-t border-line-subtle pt-4 text-[13.5px] text-ink-subtle">
+          <Clock size={15} className="shrink-0 text-ink-faint" aria-hidden />
+          {carrier.responseTime}
+        </div>
+      ) : null}
     </CardPanel>
   );
 }
 
-function RequestCard() {
+function RequestCard({ trip }: { trip: TripDetailData | null }) {
   const { request } = tripDetail;
 
   return (
@@ -271,7 +318,9 @@ function RequestCard() {
       <div className="mt-5 flex flex-col gap-3 rounded-xl border border-line-warm bg-surface-sunken p-4">
         <div className="flex items-baseline justify-between gap-3 text-sm">
           <span className="text-ink-subtle">{request.feeLabel}</span>
-          <span className="font-display text-[19px] font-extrabold">{request.feeValue}</span>
+          <span className="font-display text-[19px] font-extrabold">
+            {trip?.feeValue ?? NO_VALUE}
+          </span>
         </div>
         <div className="flex items-baseline justify-between gap-3 text-sm">
           <span className="text-ink-subtle">{request.commissionLabel}</span>
@@ -284,10 +333,10 @@ function RequestCard() {
         </p>
       </div>
 
-      <ActionButton block size="lg" className="mt-[18px]">
+      <ActionButton block size="lg" className="mt-[18px]" disabled={!trip}>
         {request.submit}
       </ActionButton>
-      <ActionButton variant="outline" block size="md" className="mt-2.5">
+      <ActionButton variant="outline" block size="md" className="mt-2.5" disabled={!trip}>
         {request.secondary}
       </ActionButton>
       <p className="mt-3 text-center text-[12.5px] text-ink-dim">{request.footnote}</p>
@@ -295,26 +344,31 @@ function RequestCard() {
   );
 }
 
-function OtherTripsCard() {
+function OtherTripsCard({ trip }: { trip: TripDetailData | null }) {
   const { otherTrips } = tripDetail;
+  const items = trip?.otherTrips ?? [];
 
   return (
     <CardPanel className="p-[22px_24px]">
       <CardEyebrow>{otherTrips.eyebrow}</CardEyebrow>
-      <ul className="mt-4 flex flex-col gap-3.5">
-        {otherTrips.items.map((item) => (
-          <li key={item.id}>
-            <Link
-              href={routes.trip(item.id)}
-              className="flex items-center gap-2.5 text-[13.5px] text-ink-muted transition-colors hover:text-brand"
-            >
-              <DensityDot density={item.density} />
-              {item.label}
-              <span className="ml-auto text-ink-faint">{item.rating}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {items.length === 0 ? (
+        <EmptyState className="mt-4">{otherTrips.empty}</EmptyState>
+      ) : (
+        <ul className="mt-4 flex flex-col gap-3.5">
+          {items.map((item) => (
+            <li key={item.id}>
+              <Link
+                href={routes.trip(item.id)}
+                className="flex items-center gap-2.5 text-[13.5px] text-ink-muted transition-colors hover:text-brand"
+              >
+                <DensityDot density={item.density} />
+                {item.label}
+                <span className="ml-auto text-ink-faint">{item.rating}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </CardPanel>
   );
 }

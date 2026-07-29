@@ -1,28 +1,24 @@
 /**
- * Copy for the empresa-side publishing form. Fee amounts and the option lists
- * are placeholder sample data from the delivered design artifact — the real
- * ubicaciones options come from the catalog and the fee from the payment service.
+ * Copy for the empresa-side publishing form. Fields start blank; origin and
+ * destination options come from the locations catalog. The cargo-type and
+ * requirement taxonomies below have no column in prisma/schema.prisma yet —
+ * see memory/open-form-taxonomies-unbacked.md.
  */
 export const publishCargo = {
-  user: { initials: "PS", name: "Petrosur SRL", meta: "Compras · Neuquén" },
-
   badge: "Fee fijo por publicación",
   title: "Publicá tu carga",
   subtitle:
     "Describí qué necesitás mover y a dónde. Los transportistas que ya viajan por esa ruta reciben tu solicitud.",
 
-  steps: [
-    { label: "Carga", done: true },
-    { label: "Urgencia", done: true },
-    { label: "Pago del fee", done: false },
-  ],
+  steps: [{ label: "Carga" }, { label: "Urgencia" }, { label: "Pago del fee" }],
+
+  locationPlaceholder: "Seleccioná una ubicación",
 
   cargo: {
     eyebrow: "Qué mandás",
-    description: { label: "Descripción de la carga", value: "6 pallets de bentonita + 1 skid de válvulas" },
+    description: { label: "Descripción de la carga" },
     type: {
       label: "Tipo de carga",
-      value: "pallets",
       options: [
         { value: "pallets", label: "Pallets" },
         { value: "skids", label: "Skids" },
@@ -32,49 +28,26 @@ export const publishCargo = {
         { value: "full-load", label: "Equipo completo" },
       ],
     },
-    packages: { label: "Cantidad de bultos", value: "7" },
+    packages: { label: "Cantidad de bultos" },
     dimensions: [
-      { id: "length", label: "Largo (m)", value: "6,4" },
-      { id: "width", label: "Ancho (m)", value: "2,3" },
-      { id: "height", label: "Alto (m)", value: "1,8" },
-      { id: "weight", label: "Peso (t)", value: "7,2" },
+      { id: "length", label: "Largo (m)" },
+      { id: "width", label: "Ancho (m)" },
+      { id: "height", label: "Alto (m)" },
+      { id: "weight", label: "Peso (t)" },
     ],
-    matchHintLead: "Entra en ",
-    matchHintCount: "18 camiones",
-    matchHintTail: " con espacio publicado esta semana en esa ruta.",
   },
 
   route: {
     eyebrow: "Origen y destino",
-    origin: {
-      label: "Retiro en",
-      value: "neuquen-pi",
-      options: [
-        { value: "neuquen-pi", label: "Neuquén Capital · Parque Industrial" },
-        { value: "anelo", label: "Añelo (ciudad)" },
-        { value: "cutral-co", label: "Cutral Có" },
-        { value: "plaza-huincul", label: "Plaza Huincul" },
-      ],
-    },
-    destination: {
-      label: "Entrega en",
-      value: "pad-b12",
-      options: [
-        { value: "pad-b12", label: "Pad B-12 · Loma Campana" },
-        { value: "pad-a7", label: "Pad A-7 · Bandurria Sur" },
-        { value: "lb-9", label: "Campamento LB-9" },
-        { value: "base-c4", label: "Base C-4 · Añelo" },
-        { value: "rincon", label: "Rincón de los Sauces" },
-      ],
-    },
-    readyAt: { label: "Listo para retirar", value: "2026-07-27" },
-    deliverBy: { label: "Entregar antes de", value: "2026-07-29" },
+    origin: { label: "Retiro en" },
+    destination: { label: "Entrega en" },
+    readyAt: { label: "Listo para retirar" },
+    deliverBy: { label: "Entregar antes de" },
     window: {
       label: "Ventana de ingreso",
-      value: "evening",
       options: [
-        { value: "evening", label: "17:30 – 19:00" },
         { value: "morning", label: "06:00 – 09:00" },
+        { value: "evening", label: "17:30 – 19:00" },
         { value: "any", label: "Cualquier horario" },
       ],
     },
@@ -83,12 +56,12 @@ export const publishCargo = {
   requirements: {
     eyebrow: "Requisitos especiales",
     options: [
-      { id: "hazardous", label: "Carga peligrosa (IMO / ONU)", checked: false },
-      { id: "refrigerated", label: "Refrigerada / cadena de frío", checked: false },
-      { id: "crane", label: "Requiere hidrogrúa o autoelevador", checked: true },
-      { id: "oversized", label: "Sobredimensionada / con escolta", checked: false },
-      { id: "site-access", label: "Acceso autorizado al yacimiento", checked: true },
-      { id: "hse", label: "Inducción HSE de la operadora", checked: false },
+      { id: "hazardous", label: "Carga peligrosa (IMO / ONU)" },
+      { id: "refrigerated", label: "Refrigerada / cadena de frío" },
+      { id: "crane", label: "Requiere hidrogrúa o autoelevador" },
+      { id: "oversized", label: "Sobredimensionada / con escolta" },
+      { id: "site-access", label: "Acceso autorizado al yacimiento" },
+      { id: "hse", label: "Inducción HSE de la operadora" },
     ],
     notes: {
       label: "Notas para el transportista",
@@ -99,7 +72,8 @@ export const publishCargo = {
 
   tiers: {
     eyebrow: "Urgencia y visibilidad",
-    intro: "Define el fee de esta publicación. No hay comisión sobre el flete en ninguno de los dos casos.",
+    intro:
+      "Define el fee de esta publicación. No hay comisión sobre el flete en ninguno de los dos casos.",
     options: [
       {
         id: "standard",
@@ -124,12 +98,12 @@ export const publishCargo = {
 
   summary: {
     eyebrow: "Resumen de la publicación",
-    origin: "Neuquén",
-    destination: "Pad B-12",
+    emptyRoute: "Elegí origen y destino",
+    /** Filled from live form state; each row shows an em dash until then. */
     rows: [
-      { label: "Carga", value: "7 bultos · 7,2 t" },
-      { label: "Espacio requerido", value: "6,4 m" },
-      { label: "Retiro", value: "lun 27/07" },
+      { id: "cargo", label: "Carga" },
+      { id: "space", label: "Espacio requerido" },
+      { id: "pickup", label: "Retiro" },
     ],
     tierLabel: "Tipo",
     visibilityLabel: "Visibilidad",
@@ -139,8 +113,8 @@ export const publishCargo = {
     commissionValue: "0%",
     totalLabel: "Total a pagar hoy",
     paymentMethodLabel: "Medio de pago",
-    paymentMethod: "Visa •••• 4417",
-    changePayment: "Cambiar",
+    paymentMethodEmpty: "Todavía no configuraste un medio de pago",
+    changePayment: "Configurar",
     submitLead: "Pagar ",
     submitTail: " y publicar",
     saveDraft: "Guardar borrador",
@@ -150,9 +124,6 @@ export const publishCargo = {
 
   usage: {
     eyebrow: "Consumo del mes",
-    total: "USD 152",
-    detail: "en 8 publicaciones",
-    body: "Con el pack de 20 publicaciones el fee unitario baja a USD 14.",
-    cta: "Ver packs",
+    empty: "Todavía no publicaste cargas este mes.",
   },
 } as const;

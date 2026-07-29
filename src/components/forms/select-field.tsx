@@ -20,6 +20,9 @@ interface SelectFieldProps {
   label: string;
   options: readonly SelectOption[];
   defaultValue?: string;
+  /** Controlled value; pair with `onValueChange`. */
+  value?: string;
+  onValueChange?: (value: string) => void;
   /** Icon rendered inside the trigger, before the value. */
   icon?: React.ReactNode;
   compact?: boolean;
@@ -31,6 +34,8 @@ export function SelectField({
   label,
   options,
   defaultValue,
+  value,
+  onValueChange,
   icon,
   compact = false,
   className,
@@ -42,6 +47,8 @@ export function SelectField({
         label={label}
         options={options}
         defaultValue={defaultValue}
+        value={value}
+        onValueChange={onValueChange}
         icon={icon}
         compact={compact}
       />
@@ -55,12 +62,21 @@ export function SelectControl({
   label,
   options,
   defaultValue,
+  value,
+  onValueChange,
   icon,
   compact = false,
   className,
 }: SelectFieldProps) {
   return (
-    <Select items={options as SelectOption[]} defaultValue={defaultValue}>
+    <Select
+      items={options as SelectOption[]}
+      defaultValue={defaultValue}
+      value={value}
+      onValueChange={
+        onValueChange ? (next: string | null) => onValueChange(next ?? "") : undefined
+      }
+    >
       <SelectTrigger
         id={id}
         aria-label={label}

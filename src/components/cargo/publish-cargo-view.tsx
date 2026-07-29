@@ -4,16 +4,18 @@ import { useState } from "react";
 import { CreditCard } from "lucide-react";
 import { AppFooter } from "@/components/app-shell/app-footer";
 import { AppHeader } from "@/components/app-shell/app-header";
+import type { AppUser } from "@/components/app-shell/user-chip";
 import { ActionButton, InlineLink } from "@/components/common/action";
 import { CardEyebrow, CardPanel } from "@/components/common/card-panel";
+import { EmptyState, NO_VALUE } from "@/components/common/empty-state";
 import { FormSteps, IntroBadge, PageIntro } from "@/components/common/form-steps";
-import { CheckIcon } from "@/components/common/icons";
 import { RouteHeadline } from "@/components/common/route-arrow";
 import { TierPicker } from "@/components/cargo/tier-picker";
 import { CheckboxField } from "@/components/forms/checkbox-field";
-import { SelectField } from "@/components/forms/select-field";
+import { SelectField, type SelectOption } from "@/components/forms/select-field";
 import { TextField, TextareaField } from "@/components/forms/text-field";
 import { appShell, publishCargo } from "@/content/es";
+import { toLocationOptions, type CatalogLocation } from "@/lib/locations";
 import { routes } from "@/lib/routes";
 
 const WIDTH = "1160px";
@@ -23,8 +25,29 @@ function formatUsd(amount: number) {
   return `USD ${amount.toFixed(2)}`;
 }
 
-export function PublishCargoView() {
+interface PublishCargoViewProps {
+  user: AppUser | null;
+  locations: readonly CatalogLocation[];
+  /** Saved payment method, from the payment service. */
+  paymentMethod: string | null;
+  /** This month's publishing spend, from the payment service. */
+  usage: { total: string; detail: string; body: string; cta: string } | null;
+}
+
+export function PublishCargoView({
+  user,
+  locations,
+  paymentMethod,
+  usage,
+}: PublishCargoViewProps) {
   const [tierId, setTierId] = useState<string>(publishCargo.tiers.options[0].id);
+  const [description, setDescription] = useState("");
+  const [packages, setPackages] = useState("");
+  const [dimensions, setDimensions] = useState<Record<string, string>>({});
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [readyAt, setReadyAt] = useState("");
+
   const tier =
     publishCargo.tiers.options.find((option) => option.id === tierId) ??
     publishCargo.tiers.options[0];
@@ -32,30 +55,60 @@ export function PublishCargoView() {
   const tax = Math.round(tier.fee * TAX_RATE * 100) / 100;
   const total = tier.fee + tax;
 
+  const locationOptions = [
+    { value: "", label: publishCargo.locationPlaceholder },
+    ...toLocationOptions(locations),
+  ];
+  const nameOf = (id: string) => locations.find((location) => location.id === id)?.name ?? "";
+
+  const summaryValues: Record<string, string> = {
+    cargo: [packages && `${packages} bultos`, dimensions.weight && `${dimensions.weight} t`]
+      .filter(Boolean)
+      .join(" · "),
+    space: dimensions.length ? `${dimensions.length} m` : "",
+    pickup: readyAt,
+  };
+
   return (
     <div className="flex flex-1 flex-col bg-surface-base">
       <AppHeader
         width={WIDTH}
         nav={appShell.nav.shipper}
         activeHref={routes.publishCargo}
-        user={publishCargo.user}
+        user={user}
       />
 
-      <main
-        className="mx-auto w-full flex-1 px-6 pt-8 pb-20 sm:px-8"
-        style={{ maxWidth: WIDTH }}
-      >
+      <main className="mx-auto w-full flex-1 px-6 pt-8 pb-20 sm:px-8" style={{ maxWidth: WIDTH }}>
         <PageIntro
           badge={<IntroBadge tone="brand">{publishCargo.badge}</IntroBadge>}
           title={publishCargo.title}
           subtitle={publishCargo.subtitle}
-          steps={<FormSteps label={publishCargo.title} steps={publishCargo.steps} />}
+          steps={
+            <FormSteps label={publishCargo.title} steps={publishCargo.steps} current={0} />
+          }
         />
 
         <div className="mt-9 grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_356px]">
           <div className="flex flex-col gap-5">
-            <CargoCard />
-            <RouteCard />
+            <CargoCard
+              description={description}
+              onDescriptionChange={setDescription}
+              packages={packages}
+              onPackagesChange={setPackages}
+              dimensions={dimensions}
+              onDimensionChange={(id, value) =>
+                setDimensions((prev) => ({ ...prev, [id]: value }))
+              }
+            />
+            <RouteCard
+              locationOptions={locationOptions}
+              origin={origin}
+              destination={destination}
+              onOriginChange={setOrigin}
+              onDestinationChange={setDestination}
+              readyAt={readyAt}
+              onReadyAtChange={setReadyAt}
+            />
             <RequirementsCard />
 
             <CardPanel className="p-6 sm:p-[28px_30px]">
@@ -74,13 +127,17 @@ export function PublishCargoView() {
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-[92px]">
             <SummaryCard
+              origin={nameOf(origin)}
+              destination={nameOf(destination)}
+              values={summaryValues}
               tierName={tier.summaryName}
               visibility={tier.visibility}
               fee={formatUsd(tier.fee)}
               tax={formatUsd(tax)}
               total={formatUsd(total)}
+              paymentMethod={paymentMethod}
             />
-            <UsageCard />
+            <UsageCard usage={usage} />
           </aside>
         </div>
       </main>
@@ -90,7 +147,21 @@ export function PublishCargoView() {
   );
 }
 
-function CargoCard() {
+function CargoCard({
+  description,
+  onDescriptionChange,
+  packages,
+  onPackagesChange,
+  dimensions,
+  onDimensionChange,
+}: {
+  description: string;
+  onDescriptionChange: (value: string) => void;
+  packages: string;
+  onPackagesChange: (value: string) => void;
+  dimensions: Record<string, string>;
+  onDimensionChange: (id: string, value: string) => void;
+}) {
   const { cargo } = publishCargo;
 
   return (
@@ -101,7 +172,8 @@ function CargoCard() {
         <TextField
           id="cargo-description"
           label={cargo.description.label}
-          defaultValue={cargo.description.value}
+          value={description}
+          onValueChange={onDescriptionChange}
         />
       </div>
 
@@ -110,12 +182,13 @@ function CargoCard() {
           id="cargo-type"
           label={cargo.type.label}
           options={cargo.type.options}
-          defaultValue={cargo.type.value}
+          defaultValue={cargo.type.options[0].value}
         />
         <TextField
           id="cargo-packages"
           label={cargo.packages.label}
-          defaultValue={cargo.packages.value}
+          value={packages}
+          onValueChange={onPackagesChange}
         />
       </div>
 
@@ -125,24 +198,32 @@ function CargoCard() {
             key={dimension.id}
             id={`cargo-${dimension.id}`}
             label={dimension.label}
-            defaultValue={dimension.value}
+            value={dimensions[dimension.id] ?? ""}
+            onValueChange={(value) => onDimensionChange(dimension.id, value)}
           />
         ))}
       </div>
-
-      <p className="mt-[18px] flex items-start gap-3 text-[13.5px] text-ink-subtle">
-        <CheckIcon className="mt-0.5" />
-        <span>
-          {cargo.matchHintLead}
-          <span className="font-semibold text-ink">{cargo.matchHintCount}</span>
-          {cargo.matchHintTail}
-        </span>
-      </p>
     </CardPanel>
   );
 }
 
-function RouteCard() {
+function RouteCard({
+  locationOptions,
+  origin,
+  destination,
+  onOriginChange,
+  onDestinationChange,
+  readyAt,
+  onReadyAtChange,
+}: {
+  locationOptions: readonly SelectOption[];
+  origin: string;
+  destination: string;
+  onOriginChange: (value: string) => void;
+  onDestinationChange: (value: string) => void;
+  readyAt: string;
+  onReadyAtChange: (value: string) => void;
+}) {
   const { route } = publishCargo;
 
   return (
@@ -153,14 +234,16 @@ function RouteCard() {
         <SelectField
           id="cargo-origin"
           label={route.origin.label}
-          options={route.origin.options}
-          defaultValue={route.origin.value}
+          options={locationOptions}
+          value={origin}
+          onValueChange={onOriginChange}
         />
         <SelectField
           id="cargo-destination"
           label={route.destination.label}
-          options={route.destination.options}
-          defaultValue={route.destination.value}
+          options={locationOptions}
+          value={destination}
+          onValueChange={onDestinationChange}
         />
       </div>
 
@@ -169,19 +252,15 @@ function RouteCard() {
           id="cargo-ready-at"
           type="date"
           label={route.readyAt.label}
-          defaultValue={route.readyAt.value}
+          value={readyAt}
+          onValueChange={onReadyAtChange}
         />
-        <TextField
-          id="cargo-deliver-by"
-          type="date"
-          label={route.deliverBy.label}
-          defaultValue={route.deliverBy.value}
-        />
+        <TextField id="cargo-deliver-by" type="date" label={route.deliverBy.label} />
         <SelectField
           id="cargo-window"
           label={route.window.label}
           options={route.window.options}
-          defaultValue={route.window.value}
+          defaultValue={route.window.options[0].value}
           compact
         />
       </div>
@@ -202,7 +281,6 @@ function RequirementsCard() {
             key={option.id}
             id={`cargo-req-${option.id}`}
             label={option.label}
-            defaultChecked={option.checked}
           />
         ))}
       </div>
@@ -220,17 +298,25 @@ function RequirementsCard() {
 }
 
 function SummaryCard({
+  origin,
+  destination,
+  values,
   tierName,
   visibility,
   fee,
   tax,
   total,
+  paymentMethod,
 }: {
+  origin: string;
+  destination: string;
+  values: Record<string, string>;
   tierName: string;
   visibility: string;
   fee: string;
   tax: string;
   total: string;
+  paymentMethod: string | null;
 }) {
   const { summary } = publishCargo;
 
@@ -238,17 +324,21 @@ function SummaryCard({
     <CardPanel tone="warm" className="p-6">
       <CardEyebrow tone="brand">{summary.eyebrow}</CardEyebrow>
 
-      <RouteHeadline
-        origin={summary.origin}
-        destination={summary.destination}
-        className="mt-[18px] font-display text-[19px] font-extrabold tracking-[-0.02em]"
-      />
+      {origin && destination ? (
+        <RouteHeadline
+          origin={origin}
+          destination={destination}
+          className="mt-[18px] font-display text-[19px] font-extrabold tracking-[-0.02em]"
+        />
+      ) : (
+        <div className="mt-[18px] text-[13.5px] text-ink-ghost">{summary.emptyRoute}</div>
+      )}
 
       <dl className="mt-[18px] flex flex-col gap-3 border-t border-line-warm pt-4 text-sm">
         {summary.rows.map((row) => (
-          <div key={row.label} className="flex justify-between gap-4">
+          <div key={row.id} className="flex justify-between gap-4">
             <dt className="text-ink-subtle">{row.label}</dt>
-            <dd className="m-0 text-right">{row.value}</dd>
+            <dd className="m-0 text-right">{values[row.id] || NO_VALUE}</dd>
           </div>
         ))}
         <div className="flex justify-between gap-4">
@@ -288,7 +378,9 @@ function SummaryCard({
         <div className="text-[12.5px] text-ink-subtle">{summary.paymentMethodLabel}</div>
         <div className="flex items-center gap-3 rounded-[10px] border border-line-raised bg-surface-raised px-3.5 py-3">
           <CreditCard size={20} className="shrink-0 text-ink-subtle" aria-hidden />
-          <span className="text-[13.5px] text-ink-muted">{summary.paymentMethod}</span>
+          <span className="text-[13.5px] text-ink-muted">
+            {paymentMethod ?? summary.paymentMethodEmpty}
+          </span>
           <InlineLink href={routes.dashboard} className="ml-auto text-[12.5px]">
             {summary.changePayment}
           </InlineLink>
@@ -309,24 +401,30 @@ function SummaryCard({
   );
 }
 
-function UsageCard() {
-  const { usage } = publishCargo;
+function UsageCard({ usage }: { usage: PublishCargoViewProps["usage"] }) {
+  const copy = publishCargo.usage;
 
   return (
     <CardPanel tone="sunken" className="p-[22px_24px]">
-      <CardEyebrow>{usage.eyebrow}</CardEyebrow>
-      <div className="mt-3.5 flex flex-wrap items-baseline gap-2.5">
-        <span className="font-display text-[26px] font-extrabold tracking-[-0.03em]">
-          {usage.total}
-        </span>
-        <span className="text-[13px] text-ink-faint">{usage.detail}</span>
-      </div>
-      <p className="mt-4 border-t border-line-subtle pt-3.5 text-[13px] leading-[1.55] text-ink-subtle">
-        {usage.body}{" "}
-        <InlineLink href={routes.dashboard} className="text-[13px]">
-          {usage.cta}
-        </InlineLink>
-      </p>
+      <CardEyebrow>{copy.eyebrow}</CardEyebrow>
+      {!usage ? (
+        <EmptyState className="mt-3.5">{copy.empty}</EmptyState>
+      ) : (
+        <>
+          <div className="mt-3.5 flex flex-wrap items-baseline gap-2.5">
+            <span className="font-display text-[26px] font-extrabold tracking-[-0.03em]">
+              {usage.total}
+            </span>
+            <span className="text-[13px] text-ink-faint">{usage.detail}</span>
+          </div>
+          <p className="mt-4 border-t border-line-subtle pt-3.5 text-[13px] leading-[1.55] text-ink-subtle">
+            {usage.body}{" "}
+            <InlineLink href={routes.dashboard} className="text-[13px]">
+              {usage.cta}
+            </InlineLink>
+          </p>
+        </>
+      )}
     </CardPanel>
   );
 }

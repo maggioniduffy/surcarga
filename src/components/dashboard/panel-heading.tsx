@@ -4,10 +4,15 @@ import { cn } from "@/lib/utils";
 interface PanelHeadingProps {
   eyebrow: string;
   eyebrowTone: "brand" | "published";
-  greeting: string;
-  summaryLead: string;
-  summaryHighlight: string;
-  summaryTail: string;
+  /** Account name from the session; falls back to a nameless greeting. */
+  name: string | null;
+  greeting: { lead: string; tail: string; fallback: string };
+  summary: {
+    lead: string;
+    tail: string;
+    count: number;
+    unit: { one: string; many: string };
+  };
   cta: { label: string; href: string };
 }
 
@@ -15,12 +20,13 @@ interface PanelHeadingProps {
 export function PanelHeading({
   eyebrow,
   eyebrowTone,
+  name,
   greeting,
-  summaryLead,
-  summaryHighlight,
-  summaryTail,
+  summary,
   cta,
 }: PanelHeadingProps) {
+  const unit = summary.count === 1 ? summary.unit.one : summary.unit.many;
+
   return (
     <div className="flex flex-wrap items-end justify-between gap-5">
       <div>
@@ -33,12 +39,12 @@ export function PanelHeading({
           {eyebrow}
         </div>
         <h1 className="mt-3.5 font-display text-[clamp(2rem,7vw,40px)] leading-[1.02] font-black tracking-[-0.035em]">
-          {greeting}
+          {name ? `${greeting.lead}${name}${greeting.tail}` : greeting.fallback}
         </h1>
         <p className="mt-2 text-[15.5px] text-ink-subtle">
-          {summaryLead}
-          <span className="font-semibold text-brand">{summaryHighlight}</span>
-          {summaryTail}
+          {summary.lead}
+          <span className="font-semibold text-brand">{`${summary.count} ${unit}`}</span>
+          {summary.tail}
         </p>
       </div>
 

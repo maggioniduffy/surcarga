@@ -3,7 +3,8 @@ import { cn } from "@/lib/utils";
 export interface AppUser {
   initials: string;
   name: string;
-  meta: string;
+  /** Role/company line — `null` until `users.role` is synced from Clerk. */
+  meta: string | null;
 }
 
 interface UserChipProps {
@@ -24,7 +25,7 @@ export function UserChip({ user, compact = true, className }: UserChipProps) {
       </span>
       <span className={cn("text-[13px] leading-[1.25]", compact && "hidden md:block")}>
         <span className="block font-semibold">{user.name}</span>
-        <span className="block text-xs text-ink-faint">{user.meta}</span>
+        {user.meta ? <span className="block text-xs text-ink-faint">{user.meta}</span> : null}
       </span>
     </div>
   );

@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/common/empty-state";
 import { cn } from "@/lib/utils";
 
 export type StatusTone = "brand" | "published" | "muted";
@@ -20,14 +21,20 @@ interface DataTableProps {
   rows: readonly TableRow[];
   /** Column widths applied from `md` up; below that rows stack. */
   widths: readonly string[];
+  /** Shown instead of the table while there are no rows. */
+  empty: string;
 }
 
 /**
  * The dashboard's listing table. From `md` up it is a real table; below that
  * each row collapses into a labelled stack so nothing scrolls sideways.
  */
-export function DataTable({ caption, columns, rows, widths }: DataTableProps) {
+export function DataTable({ caption, columns, rows, widths, empty }: DataTableProps) {
   const lastIndex = columns.length - 1;
+
+  if (rows.length === 0) {
+    return <EmptyState className="mt-5">{empty}</EmptyState>;
+  }
 
   return (
     <table className="mt-5 w-full border-collapse text-sm">

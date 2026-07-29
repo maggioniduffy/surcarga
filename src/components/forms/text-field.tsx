@@ -7,6 +7,9 @@ interface TextFieldProps {
   id: string;
   label: string;
   defaultValue?: string;
+  /** Controlled value; pair with `onValueChange`. */
+  value?: string;
+  onValueChange?: (value: string) => void;
   type?: "text" | "date" | "time";
   /** Unit rendered inside the control, right-aligned (e.g. "toneladas"). */
   suffix?: string;
@@ -19,6 +22,8 @@ export function TextField({
   id,
   label,
   defaultValue,
+  value,
+  onValueChange,
   type = "text",
   suffix,
   compact = false,
@@ -31,6 +36,8 @@ export function TextField({
           id={id}
           type={type}
           defaultValue={defaultValue}
+          value={value}
+          onChange={onValueChange ? (event) => onValueChange(event.target.value) : undefined}
           className={cn(
             controlClassName,
             "h-auto",

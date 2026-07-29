@@ -14,14 +14,16 @@ import { searchTrucks } from "@/content/es";
 
 const { filters } = searchTrucks;
 
-const initialTypes = Object.fromEntries(
-  filters.cargoTypes.options.map((option) => [option.id, option.selected])
-);
-
 /** Search filters. Sticky rail from `lg` up; a collapsible panel below that. */
-export function FilterSidebar() {
-  const [capacity, setCapacity] = useState<number>(filters.capacity.value);
-  const [types, setTypes] = useState<Record<string, boolean>>(initialTypes);
+export function FilterSidebar({
+  locationOptions,
+}: {
+  locationOptions: readonly { value: string; label: string }[];
+}) {
+  const [capacity, setCapacity] = useState<number>(filters.capacity.min);
+  const [types, setTypes] = useState<Record<string, boolean>>({});
+
+  const options = [{ value: "", label: filters.locationPlaceholder }, ...locationOptions];
 
   return (
     <CardPanel className="p-[22px] lg:sticky lg:top-[94px]">
@@ -40,8 +42,8 @@ export function FilterSidebar() {
           <SelectControl
             id="filter-destination"
             label={filters.destination.label}
-            options={filters.destination.options}
-            defaultValue={filters.destination.value}
+            options={options}
+            defaultValue=""
             icon={<MapPin size={15} aria-hidden />}
             compact
           />
@@ -53,8 +55,8 @@ export function FilterSidebar() {
           <SelectControl
             id="filter-origin"
             label={filters.origin.label}
-            options={filters.origin.options}
-            defaultValue={filters.origin.value}
+            options={options}
+            defaultValue=""
             compact
           />
         </Field>
@@ -65,20 +67,8 @@ export function FilterSidebar() {
         {/* The rail is only 272px wide, so the range stacks there and pairs up
             in the full-width collapsible panel on smaller viewports. */}
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1 lg:gap-3">
-          <TextField
-            id="filter-from"
-            type="date"
-            compact
-            label={filters.dates.fromLabel}
-            defaultValue={filters.dates.from}
-          />
-          <TextField
-            id="filter-to"
-            type="date"
-            compact
-            label={filters.dates.toLabel}
-            defaultValue={filters.dates.to}
-          />
+          <TextField id="filter-from" type="date" compact label={filters.dates.fromLabel} />
+          <TextField id="filter-to" type="date" compact label={filters.dates.toLabel} />
         </div>
       </fieldset>
 
@@ -113,12 +103,7 @@ export function FilterSidebar() {
 
       <div className="mt-[22px] flex flex-col gap-3 border-t border-line-subtle pt-5">
         {filters.toggles.map((toggle) => (
-          <CheckboxField
-            key={toggle.id}
-            id={`filter-${toggle.id}`}
-            label={toggle.label}
-            defaultChecked={toggle.checked}
-          />
+          <CheckboxField key={toggle.id} id={`filter-${toggle.id}`} label={toggle.label} />
         ))}
       </div>
 

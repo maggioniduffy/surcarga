@@ -90,6 +90,12 @@ shadcn/ui. Components live in `components/ui/` and are treated as generated/vend
 - Role-differentiated dashboard (tabbed or split view distinguishing empresa vs. transportista data).
 - Auth / onboarding flow (sign up with role selection, sign in).
 
+## Empty States
+Every list, table and figure on a screen is data-driven: components take their records as props and never import sample data. When a list has no records the block **stays in place** and renders `EmptyState` (`components/common/empty-state.tsx`) — a dashed-border panel with a single Spanish sentence from the screen's content file (each list owns an `empty` key). A single missing figure (a stat, a metric, a rating) renders the em dash `NO_VALUE` from the same module rather than a zero or a guess. Never fill a gap with plausible-looking sample content.
+
+## Maps
+Both schematic maps (`landing/coverage-map.tsx`, `search/region-map.tsx`) draw one node per **locations-catalog** entry, positioned by projecting its real lat/long into the SVG viewBox via `lib/map-projection.ts`. Cities render in ink, yacimientos in brand orange. No node, label or corridor is hardcoded, and no tile or routing API is used (architecture-context.md Invariant #4). Corridor lines and the route-density colour scale only appear once the trips service can say which routes actually carry traffic.
+
 ## Motion
 Lightweight CSS transitions (or Framer Motion if interaction complexity warrants it) at roughly 150–250ms for hover/press/panel states. Respect `prefers-reduced-motion`: fall back to instant state changes with no transform/opacity animation.
 

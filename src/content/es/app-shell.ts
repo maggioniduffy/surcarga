@@ -6,6 +6,7 @@ export const appShell = {
     openMenu: "Abrir menú",
     closeMenu: "Cerrar menú",
     homeLabel: "Ir al inicio",
+    signIn: "Ingresar",
   },
 
   /** Light/dark switch, shared by the landing header and the app header. */

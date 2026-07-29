@@ -1,38 +1,67 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
 import { AppFooter } from "@/components/app-shell/app-footer";
 import { AppHeader } from "@/components/app-shell/app-header";
+import type { AppUser } from "@/components/app-shell/user-chip";
 import { ActionButton, InlineLink } from "@/components/common/action";
 import { CardEyebrow, CardPanel } from "@/components/common/card-panel";
+import { EmptyState } from "@/components/common/empty-state";
 import { FormSteps, IntroBadge, PageIntro } from "@/components/common/form-steps";
 import { CheckIcon, WarningNote } from "@/components/common/icons";
 import { RouteHeadline } from "@/components/common/route-arrow";
 import { CheckboxField } from "@/components/forms/checkbox-field";
 import { ChipToggle } from "@/components/forms/chip-toggle";
 import { RangeField } from "@/components/forms/range-field";
-import { SelectField } from "@/components/forms/select-field";
+import { SelectField, type SelectOption } from "@/components/forms/select-field";
 import { TextField, TextareaField } from "@/components/forms/text-field";
 import { appShell, publishTrip } from "@/content/es";
+import { toLocationOptions, type CatalogLocation } from "@/lib/locations";
 import { routes } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 
 const WIDTH = "1160px";
 
-const initialTypes = Object.fromEntries(
-  publishTrip.accepted.options.map((option) => [option.id, option.selected])
-);
-
 function formatMeters(value: number) {
   return `${String(value).replace(".", ",")} m`;
 }
 
-export function PublishTripView() {
-  const [recurring, setRecurring] = useState(true);
-  const [meters, setMeters] = useState<number>(publishTrip.capacity.meters.value);
-  const [types, setTypes] = useState<Record<string, boolean>>(initialTypes);
+/** One cargo waiting on the trip's route, from the cargos service. */
+export interface WaitingCargo {
+  id: string;
+  label: string;
+  meta: string;
+  urgent: boolean;
+}
 
+interface PublishTripViewProps {
+  user: AppUser | null;
+  locations: readonly CatalogLocation[];
+  waitingCargo: readonly WaitingCargo[];
+  /** Units the carrier has on file; empty until the fleet model exists. */
+  unitOptions: readonly SelectOption[];
+}
+
+export function PublishTripView({
+  user,
+  locations,
+  waitingCargo,
+  unitOptions,
+}: PublishTripViewProps) {
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [departureDate, setDepartureDate] = useState("");
+  const [departureTime, setDepartureTime] = useState("");
+  const [recurring, setRecurring] = useState(false);
+  const [days, setDays] = useState<Record<string, boolean>>({});
+  const [meters, setMeters] = useState<number>(publishTrip.capacity.meters.min);
+  const [types, setTypes] = useState<Record<string, boolean>>({});
+
+  const locationOptions = [
+    { value: "", label: publishTrip.locationPlaceholder },
+    ...toLocationOptions(locations),
+  ];
+  const nameOf = (id: string) => locations.find((location) => location.id === id)?.name ?? "";
   const selectedCount = Object.values(types).filter(Boolean).length;
 
   return (
@@ -41,24 +70,41 @@ export function PublishTripView() {
         width={WIDTH}
         nav={appShell.nav.carrier}
         activeHref={routes.publishTrip}
-        user={publishTrip.user}
+        user={user}
       />
 
-      <main
-        className="mx-auto w-full flex-1 px-6 pt-8 pb-20 sm:px-8"
-        style={{ maxWidth: WIDTH }}
-      >
+      <main className="mx-auto w-full flex-1 px-6 pt-8 pb-20 sm:px-8" style={{ maxWidth: WIDTH }}>
         <PageIntro
           badge={<IntroBadge tone="published">{publishTrip.badge}</IntroBadge>}
           title={publishTrip.title}
           subtitle={publishTrip.subtitle}
-          steps={<FormSteps label={publishTrip.title} steps={publishTrip.steps} />}
+          steps={
+            <FormSteps label={publishTrip.title} steps={publishTrip.steps} current={0} />
+          }
         />
 
         <div className="mt-9 grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_344px]">
           <div className="flex flex-col gap-5">
-            <RouteCard recurring={recurring} onRecurringChange={setRecurring} />
-            <CapacityCard meters={meters} onMetersChange={setMeters} />
+            <RouteCard
+              locationOptions={locationOptions}
+              origin={origin}
+              destination={destination}
+              onOriginChange={setOrigin}
+              onDestinationChange={setDestination}
+              departureDate={departureDate}
+              departureTime={departureTime}
+              onDepartureDateChange={setDepartureDate}
+              onDepartureTimeChange={setDepartureTime}
+              recurring={recurring}
+              onRecurringChange={setRecurring}
+              days={days}
+              onDayToggle={(id) => setDays((prev) => ({ ...prev, [id]: !prev[id] }))}
+            />
+            <CapacityCard
+              unitOptions={unitOptions}
+              meters={meters}
+              onMetersChange={setMeters}
+            />
             <AcceptedCargoCard
               types={types}
               onToggle={(id) => setTypes((prev) => ({ ...prev, [id]: !prev[id] }))}
@@ -66,9 +112,17 @@ export function PublishTripView() {
           </div>
 
           <aside className="flex flex-col gap-4 lg:sticky lg:top-[92px]">
-            <PreviewCard meters={meters} selectedCount={selectedCount} />
+            <PreviewCard
+              origin={nameOf(origin)}
+              destination={nameOf(destination)}
+              departureDate={departureDate}
+              departureTime={departureTime}
+              meters={meters}
+              selectedCount={selectedCount}
+              typeCount={publishTrip.accepted.options.length}
+            />
             <FreeCard />
-            <WaitingCargoCard />
+            <WaitingCargoCard items={waitingCargo} />
           </aside>
         </div>
       </main>
@@ -79,11 +133,33 @@ export function PublishTripView() {
 }
 
 function RouteCard({
+  locationOptions,
+  origin,
+  destination,
+  onOriginChange,
+  onDestinationChange,
+  departureDate,
+  departureTime,
+  onDepartureDateChange,
+  onDepartureTimeChange,
   recurring,
   onRecurringChange,
+  days,
+  onDayToggle,
 }: {
+  locationOptions: readonly SelectOption[];
+  origin: string;
+  destination: string;
+  onOriginChange: (value: string) => void;
+  onDestinationChange: (value: string) => void;
+  departureDate: string;
+  departureTime: string;
+  onDepartureDateChange: (value: string) => void;
+  onDepartureTimeChange: (value: string) => void;
   recurring: boolean;
   onRecurringChange: (value: boolean) => void;
+  days: Record<string, boolean>;
+  onDayToggle: (id: string) => void;
 }) {
   const { route } = publishTrip;
 
@@ -95,14 +171,16 @@ function RouteCard({
         <SelectField
           id="trip-origin"
           label={route.origin.label}
-          options={route.origin.options}
-          defaultValue={route.origin.value}
+          options={locationOptions}
+          value={origin}
+          onValueChange={onOriginChange}
         />
         <SelectField
           id="trip-destination"
           label={route.destination.label}
-          options={route.destination.options}
-          defaultValue={route.destination.value}
+          options={locationOptions}
+          value={destination}
+          onValueChange={onDestinationChange}
         />
       </div>
 
@@ -112,21 +190,7 @@ function RouteCard({
           <span className="ml-1 text-ink-ghost">{route.stops.optional}</span>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
-          {route.stops.items.map((stop) => (
-            <span
-              key={stop.id}
-              className="inline-flex items-center gap-2 rounded-lg border border-line-warm-raised bg-surface-warm-raised px-3 py-2.5 text-[13.5px] font-semibold text-brand"
-            >
-              {stop.label}
-              <button
-                type="button"
-                aria-label={`${route.stops.remove}: ${stop.label}`}
-                className="cursor-pointer text-[#8a4a28] transition-colors hover:text-brand"
-              >
-                <X size={13} aria-hidden />
-              </button>
-            </span>
-          ))}
+          <span className="text-[13px] text-ink-ghost">{route.stops.empty}</span>
           <button
             type="button"
             className="cursor-pointer rounded-lg border border-dashed border-line-control px-3.5 py-2.5 text-[13.5px] text-ink-subtle transition-colors hover:border-line-control-hover hover:text-ink"
@@ -141,19 +205,21 @@ function RouteCard({
           id="trip-date"
           type="date"
           label={route.departureDate.label}
-          defaultValue={route.departureDate.value}
+          value={departureDate}
+          onValueChange={onDepartureDateChange}
         />
         <TextField
           id="trip-time"
           type="time"
           label={route.departureTime.label}
-          defaultValue={route.departureTime.value}
+          value={departureTime}
+          onValueChange={onDepartureTimeChange}
         />
         <SelectField
           id="trip-flexibility"
           label={route.flexibility.label}
           options={route.flexibility.options}
-          defaultValue={route.flexibility.value}
+          defaultValue={route.flexibility.options[0].value}
           compact
         />
       </div>
@@ -169,17 +235,20 @@ function RouteCard({
       {recurring ? (
         <div className="mt-3.5 flex flex-wrap gap-2">
           {route.recurring.days.map((day) => (
-            <span
+            <button
               key={day.id}
+              type="button"
+              aria-pressed={Boolean(days[day.id])}
+              onClick={() => onDayToggle(day.id)}
               className={cn(
-                "rounded-lg border px-3 py-2 text-[13px] font-semibold",
-                day.active
+                "cursor-pointer rounded-lg border px-3 py-2 text-[13px] font-semibold transition-colors",
+                days[day.id]
                   ? "border-line-warm-raised bg-surface-warm-raised text-brand"
-                  : "border-line-raised bg-surface-control text-ink-faint"
+                  : "border-line-raised bg-surface-control text-ink-faint hover:text-ink"
               )}
             >
               {day.label}
-            </span>
+            </button>
           ))}
         </div>
       ) : null}
@@ -188,9 +257,11 @@ function RouteCard({
 }
 
 function CapacityCard({
+  unitOptions,
   meters,
   onMetersChange,
 }: {
+  unitOptions: readonly SelectOption[];
   meters: number;
   onMetersChange: (value: number) => void;
 }) {
@@ -201,16 +272,17 @@ function CapacityCard({
       <CardEyebrow tone="brand">{capacity.eyebrow}</CardEyebrow>
 
       <div className="mt-[22px] grid grid-cols-1 gap-[18px] sm:grid-cols-2">
-        <SelectField
-          id="trip-unit"
-          label={capacity.unit.label}
-          options={capacity.unit.options}
-          defaultValue={capacity.unit.value}
-        />
+        {unitOptions.length === 0 ? (
+          <div>
+            <div className="mb-2 text-[13px] text-ink-subtle">{capacity.unit.label}</div>
+            <EmptyState className="py-5">{capacity.unit.empty}</EmptyState>
+          </div>
+        ) : (
+          <SelectField id="trip-unit" label={capacity.unit.label} options={unitOptions} />
+        )}
         <TextField
           id="trip-weight"
           label={capacity.weight.label}
-          defaultValue={capacity.weight.value}
           suffix={capacity.weight.suffix}
         />
       </div>
@@ -234,12 +306,11 @@ function CapacityCard({
           id="trip-loading"
           label={capacity.loading.label}
           options={capacity.loading.options}
-          defaultValue={capacity.loading.value}
+          defaultValue={capacity.loading.options[0].value}
         />
         <TextField
           id="trip-height"
           label={capacity.height.label}
-          defaultValue={capacity.height.value}
           suffix={capacity.height.suffix}
         />
       </div>
@@ -291,32 +362,53 @@ function AcceptedCargoCard({
   );
 }
 
-function PreviewCard({ meters, selectedCount }: { meters: number; selectedCount: number }) {
+function PreviewCard({
+  origin,
+  destination,
+  departureDate,
+  departureTime,
+  meters,
+  selectedCount,
+  typeCount,
+}: {
+  origin: string;
+  destination: string;
+  departureDate: string;
+  departureTime: string;
+  meters: number;
+  selectedCount: number;
+  typeCount: number;
+}) {
   const { preview } = publishTrip;
+  const schedule = [departureDate, departureTime].filter(Boolean).join(" · ");
 
   return (
     <CardPanel className="p-6">
       <CardEyebrow>{preview.eyebrow}</CardEyebrow>
-      <RouteHeadline
-        origin={preview.origin}
-        destination={preview.destination}
-        className="mt-[18px] font-display text-[19px] font-extrabold tracking-[-0.02em]"
-      />
-      <div className="mt-2 text-[13.5px] text-ink-subtle">{preview.schedule}</div>
+
+      {origin && destination ? (
+        <RouteHeadline
+          origin={origin}
+          destination={destination}
+          className="mt-[18px] font-display text-[19px] font-extrabold tracking-[-0.02em]"
+        />
+      ) : (
+        <div className="mt-[18px] text-[13.5px] text-ink-ghost">{preview.emptyRoute}</div>
+      )}
+
+      <div className="mt-2 text-[13.5px] text-ink-subtle">
+        {schedule || preview.emptySchedule}
+      </div>
 
       <div className="mt-[18px] grid grid-cols-2 gap-3 border-t border-line-subtle pt-4">
         <div>
           <div className="text-[11.5px] text-ink-faint">{preview.spaceLabel}</div>
-          <div className="mt-1 font-display text-lg font-extrabold">
-            {formatMeters(meters)}
-            {preview.spaceSuffix}
-          </div>
+          <div className="mt-1 font-display text-lg font-extrabold">{formatMeters(meters)}</div>
         </div>
         <div>
           <div className="text-[11.5px] text-ink-faint">{preview.typesLabel}</div>
           <div className="mt-1 font-display text-lg font-extrabold">
-            {selectedCount}
-            {preview.typesSuffix}
+            {selectedCount} / {typeCount}
           </div>
         </div>
       </div>
@@ -352,27 +444,31 @@ function FreeCard() {
   );
 }
 
-function WaitingCargoCard() {
+function WaitingCargoCard({ items }: { items: readonly WaitingCargo[] }) {
   const { waitingCargo } = publishTrip;
 
   return (
     <CardPanel tone="sunken" className="p-[22px_24px]">
       <CardEyebrow>{waitingCargo.eyebrow}</CardEyebrow>
-      <ul className="mt-4 flex flex-col gap-3.5">
-        {waitingCargo.items.map((item) => (
-          <li key={item.id} className="flex items-center gap-2.5 text-[13.5px]">
-            <span className="text-ink-muted">{item.label}</span>
-            <span
-              className={cn(
-                "ml-auto",
-                item.urgent ? "font-semibold text-brand" : "text-ink-faint"
-              )}
-            >
-              {item.meta}
-            </span>
-          </li>
-        ))}
-      </ul>
+      {items.length === 0 ? (
+        <EmptyState className="mt-4">{waitingCargo.empty}</EmptyState>
+      ) : (
+        <ul className="mt-4 flex flex-col gap-3.5">
+          {items.map((item) => (
+            <li key={item.id} className="flex items-center gap-2.5 text-[13.5px]">
+              <span className="text-ink-muted">{item.label}</span>
+              <span
+                className={cn(
+                  "ml-auto",
+                  item.urgent ? "font-semibold text-brand" : "text-ink-faint"
+                )}
+              >
+                {item.meta}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
       <p className="mt-4 border-t border-line-subtle pt-3.5 text-[13px] text-ink-faint">
         {waitingCargo.footnote}
       </p>
